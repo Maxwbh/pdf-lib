@@ -67,3 +67,4 @@ export { decodePDFRawStream } from 'src/core/streams/decode';
 
 export * from 'src/core/annotation';
 export * from 'src/core/acroform';
+export * from 'src/core/crypto';

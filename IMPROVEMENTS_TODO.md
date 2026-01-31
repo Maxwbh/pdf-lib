@@ -18,19 +18,26 @@ Este documento foi gerado a partir da análise dos forks mais populares do pdf-l
 
 ### 1. ALTA PRIORIDADE - Funcionalidades Críticas
 
-#### 1.1 Suporte a Criptografia/Descriptografia de PDFs
+#### 1.1 ✅ Suporte a Criptografia/Descriptografia de PDFs - **IMPLEMENTADO**
 - **Origem**: Fork `pdf-lib-plus-encrypt` + Issue #1326
-- **Descrição**: Adicionar capacidade de abrir e salvar PDFs protegidos por senha
-- **Benefícios**:
-  - Manipular PDFs criptografados sem erros
-  - Criar PDFs com proteção por senha
-  - Diferenciar entre senha de abertura e senha de permissões
-- **Arquivos a modificar**:
-  - `src/api/PDFDocument.ts` - Adicionar opções de criptografia
-  - `src/core/` - Criar módulo de criptografia (RC4, AES)
+- **Status**: ✅ **CONCLUÍDO**
+- **Implementação**:
+  - Criado módulo `src/core/crypto/` com suporte a MD5, RC4 e AES
+  - Suporta criptografia 40-bit RC4, 128-bit RC4, 128-bit AES e 256-bit AES
+  - Descriptografia de PDFs protegidos com senha
+  - Criptografia ao salvar com `save({ encrypt: { ... } })`
+  - Controle granular de permissões
+- **Arquivos criados/modificados**:
+  - `src/core/crypto/md5.ts` - Implementação MD5
+  - `src/core/crypto/rc4.ts` - Implementação RC4
+  - `src/core/crypto/aes.ts` - Implementação AES-CBC
+  - `src/core/crypto/PDFSecurity.ts` - Gerenciador de segurança PDF
+  - `src/api/PDFDocument.ts` - Métodos de criptografia
+  - `src/api/PDFDocumentOptions.ts` - Opções de criptografia
 
 #### 1.2 Suporte a SVG
 - **Origem**: Fork `cantoo-scribe/pdf-lib`
+- **Status**: ⏳ Pendente
 - **Descrição**: Implementar métodos `drawSvg()` e `drawSvgPath()`
 - **Benefícios**:
   - Desenhar gráficos vetoriais complexos
@@ -41,22 +48,19 @@ Este documento foi gerado a partir da análise dos forks mais populares do pdf-l
   - `src/api/operations.ts` - Operações de renderização SVG
   - Criar `src/utils/svg.ts` - Parser de SVG para operações PDF
 
-#### 1.3 Salvamento Incremental
+#### 1.3 ✅ Salvamento Incremental - **IMPLEMENTADO**
 - **Origem**: Fork `remdra/pdf-lib-incremental-save`
-- **Descrição**: Permitir salvar apenas as modificações, preservando o documento original
-- **Benefícios**:
-  - Essencial para assinaturas digitais
-  - Preserva trilha de auditoria
-  - Mais eficiente para arquivos grandes
-- **API proposta**:
-  ```typescript
-  await pdfDoc.takeSnapshot();
-  await pdfDoc.markRefForSave(pageRef);
-  const incrementalBytes = await pdfDoc.saveIncremental(snapshot);
-  ```
-- **Arquivos a modificar**:
+- **Status**: ✅ **CONCLUÍDO**
+- **Implementação**:
+  - Método `takeSnapshot()` para capturar estado do documento
+  - Método `markRefForSave(ref)` para marcar objetos modificados
+  - Método `saveIncremental()` para salvar apenas as modificações
+  - Preserva assinaturas digitais existentes
+  - Mantém trilha de auditoria do documento
+- **Arquivos criados/modificados**:
+  - `src/core/writers/PDFIncrementalWriter.ts` - Escritor incremental
   - `src/api/PDFDocument.ts` - Novos métodos
-  - `src/core/writers/PDFWriter.ts` - Lógica de escrita incremental
+  - `src/api/PDFDocumentOptions.ts` - Novas opções
 
 ---
 
@@ -183,19 +187,19 @@ Este documento foi gerado a partir da análise dos forks mais populares do pdf-l
 - [ ] Integrar correções de bugs críticos (PR #1772)
 
 ### Fase 2 - Funcionalidades Core (Semanas 5-8)
-- [ ] Implementar salvamento incremental
+- [x] ✅ Implementar salvamento incremental - **CONCLUÍDO**
 - [ ] Adicionar suporte a hyperlinks
 - [ ] Implementar flatten parcial de formulários
 
 ### Fase 3 - Segurança (Semanas 9-12)
-- [ ] Adicionar suporte a criptografia/descriptografia
+- [x] ✅ Adicionar suporte a criptografia/descriptografia - **CONCLUÍDO**
 - [ ] Integrar OSS-Fuzz para testes de segurança
 - [ ] Melhorar validação de entrada
 
 ### Fase 4 - Polimento (Semanas 13-16)
 - [ ] Compatibilidade com fontkit v2
 - [ ] Melhorias de encoding para i18n
-- [ ] Documentação e exemplos
+- [x] ✅ Documentação em português - **CONCLUÍDO**
 
 ---
 
