@@ -11,8 +11,9 @@
 7. [Trabalhando com Páginas](#trabalhando-com-páginas)
 8. [Adicionando Texto](#adicionando-texto)
 9. [Adicionando Imagens](#adicionando-imagens)
-10. [Formulários](#formulários)
-11. [Referência da API](#referência-da-api)
+10. [Hyperlinks](#hyperlinks)
+11. [Formulários](#formulários)
+12. [Referência da API](#referência-da-api)
 
 ---
 
@@ -469,6 +470,127 @@ pagina.drawImage(foto, {
   width: dims.width,
   height: dims.height,
 });
+```
+
+---
+
+## Hyperlinks
+
+A pdf-lib agora suporta a criação de hyperlinks em documentos PDF. Você pode adicionar links para URLs externas ou para outras páginas dentro do mesmo documento.
+
+### Link para URL Externa
+
+```javascript
+const { PDFDocument, rgb } = require('pdf-lib');
+
+const pdfDoc = await PDFDocument.create();
+const pagina = pdfDoc.addPage([600, 400]);
+
+// Adiciona texto que será o link
+pagina.drawText('Visite nosso site', {
+  x: 50,
+  y: 300,
+  size: 16,
+  color: rgb(0, 0, 0.8),
+});
+
+// Cria o hyperlink sobre o texto
+pagina.drawLink({
+  url: 'https://exemplo.com',
+  x: 50,
+  y: 295,
+  width: 150,
+  height: 20,
+  borderColor: rgb(0, 0, 1), // Borda azul (opcional)
+  borderWidth: 1,
+});
+
+const pdfBytes = await pdfDoc.save();
+```
+
+### Link para Página Interna
+
+```javascript
+const pdfDoc = await PDFDocument.create();
+const pagina1 = pdfDoc.addPage();
+const pagina2 = pdfDoc.addPage();
+
+// Na primeira página, cria link para a segunda
+pagina1.drawText('Ir para página 2', {
+  x: 50,
+  y: 700,
+  size: 14,
+});
+
+// Obtém a referência da página de destino
+const paginaRef = pdfDoc.getPage(1).ref;
+
+pagina1.drawLink({
+  pageRef: paginaRef,
+  x: 50,
+  y: 695,
+  width: 120,
+  height: 18,
+  destX: 0,      // Posição X de destino na página
+  destY: 800,    // Posição Y de destino na página
+  destZoom: 1,   // Zoom (1 = 100%)
+});
+
+const pdfBytes = await pdfDoc.save();
+```
+
+### Opções de Estilo do Link
+
+```javascript
+// Link sem borda visível (invisível)
+pagina.drawLink({
+  url: 'https://exemplo.com',
+  x: 50,
+  y: 300,
+  width: 100,
+  height: 20,
+  borderWidth: 0, // Sem borda
+});
+
+// Link com borda tracejada
+pagina.drawLink({
+  url: 'https://exemplo.com',
+  x: 50,
+  y: 250,
+  width: 100,
+  height: 20,
+  borderColor: rgb(1, 0, 0), // Borda vermelha
+  borderWidth: 2,
+  borderStyle: 'dashed', // 'solid', 'dashed', 'beveled', 'inset', 'underline'
+});
+```
+
+### Interface PDFPageDrawLinkOptions
+
+```typescript
+interface PDFPageDrawLinkOptions {
+  // URL externa (use url OU pageRef, não ambos)
+  url?: string;
+
+  // Referência para página interna (use url OU pageRef, não ambos)
+  pageRef?: PDFRef;
+
+  // Posição e tamanho do link (obrigatórios)
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+
+  // Destino na página interna (usado com pageRef)
+  destX?: number;
+  destY?: number;
+  destZoom?: number;
+
+  // Estilo da borda
+  borderColor?: Color;
+  borderWidth?: number;
+  borderStyle?: 'solid' | 'dashed' | 'beveled' | 'inset' | 'underline';
+}
 ```
 
 ---

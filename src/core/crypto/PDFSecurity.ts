@@ -12,8 +12,8 @@ import PDFArray from 'src/core/objects/PDFArray';
 import PDFRef from 'src/core/objects/PDFRef';
 import PDFContext from 'src/core/PDFContext';
 import { md5, md5Combined } from './md5';
-import { RC4, rc4Encrypt } from './rc4';
-import { AES, aesCbcEncrypt, aesCbcDecrypt, generateRandomIV } from './aes';
+import { rc4Encrypt } from './rc4';
+import { aesCbcEncrypt, aesCbcDecrypt } from './aes';
 
 /**
  * Permissões de documento PDF.

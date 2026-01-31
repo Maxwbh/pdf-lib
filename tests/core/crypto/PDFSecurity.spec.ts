@@ -1,5 +1,5 @@
 import { md5 } from 'src/core/crypto/md5';
-import { RC4, rc4Encrypt } from 'src/core/crypto/rc4';
+import { rc4Encrypt } from 'src/core/crypto/rc4';
 import { AES, aesCbcEncrypt, aesCbcDecrypt } from 'src/core/crypto/aes';
 import { PDFSecurity } from 'src/core/crypto/PDFSecurity';
 import PDFContext from 'src/core/PDFContext';

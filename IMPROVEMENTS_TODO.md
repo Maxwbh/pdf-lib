@@ -75,13 +75,21 @@ Este documento foi gerado a partir da análise dos forks mais populares do pdf-l
   - `src/api/PDFPage.ts` - Método drawRectangle
   - `src/api/operations.ts` - Operação drawRectangle
 
-#### 2.2 Suporte a Hyperlinks
+#### 2.2 ✅ Suporte a Hyperlinks - **IMPLEMENTADO**
 - **Origem**: PR #1691
+- **Status**: ✅ **CONCLUÍDO**
 - **Descrição**: Adicionar links clicáveis em PDFs
 - **Benefícios**: PDFs interativos com navegação
-- **Arquivos a modificar**:
-  - `src/api/PDFPage.ts` - Método para criar links
-  - `src/core/annotation/` - Anotações de link
+- **Implementação**:
+  - Método `drawLink()` na classe PDFPage
+  - Suporte a links para URLs externas
+  - Suporte a links para páginas internas (GoTo destinations)
+  - Configuração de bordas e estilos
+- **Arquivos criados/modificados**:
+  - `src/core/annotation/PDFLinkAnnotation.ts` - Classe de anotação de link
+  - `src/core/annotation/index.ts` - Exportação do módulo
+  - `src/api/PDFPage.ts` - Método drawLink
+  - `src/api/PDFPageOptions.ts` - Interface PDFPageDrawLinkOptions
 
 #### 2.3 Renomear Campos de Formulário
 - **Origem**: PR #1748
@@ -188,7 +196,7 @@ Este documento foi gerado a partir da análise dos forks mais populares do pdf-l
 
 ### Fase 2 - Funcionalidades Core (Semanas 5-8)
 - [x] ✅ Implementar salvamento incremental - **CONCLUÍDO**
-- [ ] Adicionar suporte a hyperlinks
+- [x] ✅ Adicionar suporte a hyperlinks - **CONCLUÍDO**
 - [ ] Implementar flatten parcial de formulários
 
 ### Fase 3 - Segurança (Semanas 9-12)

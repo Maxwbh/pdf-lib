@@ -156,3 +156,25 @@ export interface PDFPageDrawCircleOptions {
   borderLineCap?: LineCapStyle;
   blendMode?: BlendMode;
 }
+
+/**
+ * Opções para adicionar um link a uma página PDF.
+ */
+export interface PDFPageDrawLinkOptions {
+  /** Posição X do link */
+  x: number;
+  /** Posição Y do link */
+  y: number;
+  /** Largura do link */
+  width: number;
+  /** Altura do link */
+  height: number;
+  /** URL de destino (para links externos) */
+  url?: string;
+  /** Índice da página de destino (para links internos, base 0) */
+  pageNumber?: number;
+  /** Cor da borda do link */
+  borderColor?: Color;
+  /** Largura da borda */
+  borderWidth?: number;
+}
