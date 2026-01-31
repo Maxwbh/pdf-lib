@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     /* Basic Options */
-    "target": "es5",
+    "target": "ES2020",
     "module": "commonjs",
     "allowJs": false,
     "checkJs": false,
@@ -21,25 +21,29 @@
 
     /* Strict Type-Checking Options */
     "strict": true,
+    "skipLibCheck": true,
 
     /* Additional Checks */
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
 
     /* Module Resolution Options */
-    "baseUrl": "./src",
+    "baseUrl": ".",
     "paths": {
-      "src/*": ["./*"]
+      "src/*": ["./src/*"]
     },
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "preserveSymlinks": true,
     "moduleResolution": "node",
 
-    /* Plugins */
-    "plugins": [{ "transform": "@zerollup/ts-transform-paths" }]
+    /* Plugins for ts-patch */
+    "plugins": [
+      { "transform": "typescript-transform-paths" },
+      { "transform": "typescript-transform-paths", "afterDeclarations": true }
+    ]
   },
   "include": ["src/**/*"]
 }

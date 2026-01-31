@@ -302,13 +302,21 @@ Este documento foi gerado a partir da análise dos forks mais populares do pdf-l
   - [x] Atualizar versão para `1.18.0` (indica novas features)
   - [x] Criar/atualizar `CHANGELOG.md`
   - [x] Atualizar `README.md` com novas funcionalidades
-  - [ ] Executar build de produção (`npm run build`) - *Requer Node.js < 22*
+  - [x] Executar build de produção (`npm run build`) - ✅ **Compatível com Node.js 22**
   - [x] Executar todos os testes (`npm test`) - **668 testes passando**
-  - [ ] Verificar arquivos em `dist/`
+  - [x] Verificar arquivos em `dist/`
   - [x] Configurar `.npmignore` adequadamente
   - [x] Adicionar badges no README (npm version, downloads, etc.)
 
-> **Nota**: O build requer Node.js < 22 devido à incompatibilidade do `ttypescript` com versões mais recentes.
+#### 6.4 ✅ Atualização para Node.js 22 - **CONCLUÍDO**
+- **Alterações realizadas**:
+  - Substituído `ttypescript` por `ts-patch` + `typescript-transform-paths`
+  - TypeScript atualizado para v5.3.0
+  - Rollup atualizado para v4.0.0
+  - Jest atualizado para v29.0.0
+  - ESLint configurado (substituindo TSLint deprecado)
+  - Todas as dependências atualizadas para versões modernas
+  - Correções de tipos para TypeScript 5 strictness
 
 ---
 
