@@ -112,6 +112,43 @@ Este documento foi gerado a partir da análise dos forks mais populares do pdf-l
 - **Arquivos a modificar**:
   - `src/api/form/PDFForm.ts` - Opções de flatten seletivo
 
+#### 2.6 Geração de Código de Barras (Boleto Bancário)
+- **Origem**: Solicitação de usuário
+- **Status**: ⏳ Pendente
+- **Descrição**: Implementar geração de códigos de barras no padrão brasileiro
+- **Benefícios**:
+  - Suporte nativo para boletos bancários brasileiros
+  - Geração de código de barras ITF-25 (Interleaved 2 of 5)
+  - Linha digitável formatada
+- **Especificações**:
+  - Padrão FEBRABAN para boletos
+  - Código de barras com 44 posições numéricas
+  - Suporte a campos: banco, moeda, fator vencimento, valor, campo livre
+- **Arquivos a criar/modificar**:
+  - `src/utils/barcode/` - Módulo de geração de código de barras
+  - `src/utils/barcode/itf25.ts` - Implementação ITF-25
+  - `src/utils/barcode/boleto.ts` - Formatador de boleto brasileiro
+  - `src/api/PDFPage.ts` - Método `drawBarcode()`
+
+#### 2.7 Geração de QR Code (Pix)
+- **Origem**: Solicitação de usuário
+- **Status**: ⏳ Pendente
+- **Descrição**: Implementar geração de QR Codes no padrão Pix
+- **Benefícios**:
+  - Suporte nativo para pagamentos Pix
+  - QR Code estático e dinâmico
+  - Conformidade com especificação do Banco Central
+- **Especificações**:
+  - Padrão EMV®QR Code (BR Code)
+  - Suporte a Pix Copia e Cola
+  - Campos: chave Pix, valor, descrição, cidade, nome do recebedor
+  - Correção de erro nível M (15%)
+- **Arquivos a criar/modificar**:
+  - `src/utils/qrcode/` - Módulo de geração de QR Code
+  - `src/utils/qrcode/qrcode.ts` - Implementação QR Code
+  - `src/utils/qrcode/pix.ts` - Formatador Pix (EMV BR Code)
+  - `src/api/PDFPage.ts` - Método `drawQRCode()`
+
 ---
 
 ### 3. BAIXA PRIORIDADE - Melhorias de Qualidade
