@@ -112,42 +112,73 @@ Este documento foi gerado a partir da análise dos forks mais populares do pdf-l
 - **Arquivos a modificar**:
   - `src/api/form/PDFForm.ts` - Opções de flatten seletivo
 
-#### 2.6 Geração de Código de Barras (Boleto Bancário)
+#### 2.6 Geração de Código de Barras
 - **Origem**: Solicitação de usuário
 - **Status**: ⏳ Pendente
-- **Descrição**: Implementar geração de códigos de barras no padrão brasileiro
+- **Descrição**: Implementar geração de códigos de barras em múltiplos formatos padrão
 - **Benefícios**:
-  - Suporte nativo para boletos bancários brasileiros
-  - Geração de código de barras ITF-25 (Interleaved 2 of 5)
-  - Linha digitável formatada
-- **Especificações**:
-  - Padrão FEBRABAN para boletos
-  - Código de barras com 44 posições numéricas
-  - Suporte a campos: banco, moeda, fator vencimento, valor, campo livre
+  - Suporte a diversos padrões de código de barras
+  - Uso em logística, varejo, identificação de produtos
+  - Suporte específico para boletos bancários brasileiros
+- **Formatos Suportados**:
+  - **1D Linear:**
+    - `Code128` - Alta densidade, alfanumérico (logística, etiquetas)
+    - `Code39` - Alfanumérico, uso industrial
+    - `EAN-13` / `EAN-8` - Produtos de varejo (padrão europeu)
+    - `UPC-A` / `UPC-E` - Produtos de varejo (padrão americano)
+    - `ITF-25` (Interleaved 2 of 5) - Numérico, boletos bancários
+    - `Codabar` - Bibliotecas, bancos de sangue
+    - `Code93` - Logística, complementar ao Code39
+  - **2D Stacked:**
+    - `PDF417` - Documentos de identidade, carteiras de motorista
+    - `DataMatrix` - Componentes eletrônicos, pequenos itens
+  - **Específico Brasil:**
+    - `Boleto FEBRABAN` - Padrão 44 dígitos para boletos bancários
 - **Arquivos a criar/modificar**:
   - `src/utils/barcode/` - Módulo de geração de código de barras
-  - `src/utils/barcode/itf25.ts` - Implementação ITF-25
+  - `src/utils/barcode/code128.ts` - Implementação Code128
+  - `src/utils/barcode/code39.ts` - Implementação Code39
+  - `src/utils/barcode/ean.ts` - Implementação EAN-13/EAN-8
+  - `src/utils/barcode/upc.ts` - Implementação UPC-A/UPC-E
+  - `src/utils/barcode/itf.ts` - Implementação ITF/Interleaved 2 of 5
   - `src/utils/barcode/boleto.ts` - Formatador de boleto brasileiro
   - `src/api/PDFPage.ts` - Método `drawBarcode()`
+  - `src/api/PDFPageOptions.ts` - Interface `PDFPageDrawBarcodeOptions`
 
-#### 2.7 Geração de QR Code (Pix)
+#### 2.7 Geração de QR Code
 - **Origem**: Solicitação de usuário
 - **Status**: ⏳ Pendente
-- **Descrição**: Implementar geração de QR Codes no padrão Pix
+- **Descrição**: Implementar geração de QR Codes em múltiplos formatos padrão
 - **Benefícios**:
-  - Suporte nativo para pagamentos Pix
-  - QR Code estático e dinâmico
-  - Conformidade com especificação do Banco Central
-- **Especificações**:
-  - Padrão EMV®QR Code (BR Code)
-  - Suporte a Pix Copia e Cola
-  - Campos: chave Pix, valor, descrição, cidade, nome do recebedor
-  - Correção de erro nível M (15%)
+  - Suporte a QR Codes genéricos e especializados
+  - Pagamentos, URLs, contatos, WiFi, etc.
+  - Suporte específico para Pix brasileiro
+- **Formatos Suportados**:
+  - **QR Code Genérico (ISO/IEC 18004):**
+    - Texto livre / URLs
+    - vCard (contatos)
+    - WiFi (configuração de rede)
+    - E-mail / SMS / Telefone
+    - Geolocalização
+    - Eventos (vCalendar)
+  - **Padrões de Pagamento:**
+    - `EMV QR Code` - Padrão internacional de pagamentos
+    - `Pix (BR Code)` - Padrão brasileiro do Banco Central
+    - `SEPA QR` - Pagamentos europeus
+  - **Níveis de Correção de Erro:**
+    - L (7%), M (15%), Q (25%), H (30%)
+  - **Versões:** 1-40 (21x21 até 177x177 módulos)
 - **Arquivos a criar/modificar**:
   - `src/utils/qrcode/` - Módulo de geração de QR Code
-  - `src/utils/qrcode/qrcode.ts` - Implementação QR Code
-  - `src/utils/qrcode/pix.ts` - Formatador Pix (EMV BR Code)
+  - `src/utils/qrcode/qrcode.ts` - Implementação QR Code (ISO 18004)
+  - `src/utils/qrcode/formatters/` - Formatadores de dados
+  - `src/utils/qrcode/formatters/text.ts` - Texto/URL genérico
+  - `src/utils/qrcode/formatters/vcard.ts` - Contatos vCard
+  - `src/utils/qrcode/formatters/wifi.ts` - Configuração WiFi
+  - `src/utils/qrcode/formatters/pix.ts` - Pix (EMV BR Code)
+  - `src/utils/qrcode/formatters/emv.ts` - EMV QR Code genérico
   - `src/api/PDFPage.ts` - Método `drawQRCode()`
+  - `src/api/PDFPageOptions.ts` - Interface `PDFPageDrawQRCodeOptions`
 
 ---
 
