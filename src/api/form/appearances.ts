@@ -105,8 +105,10 @@ export type AppearanceProviderFor<T extends PDFField> =
 export const normalizeAppearance = <T>(
   appearance: T | AppearanceMapping<T>,
 ): AppearanceMapping<T> => {
-  if ('normal' in appearance) return appearance;
-  return { normal: appearance };
+  if (appearance && typeof appearance === 'object' && 'normal' in appearance) {
+    return appearance as AppearanceMapping<T>;
+  }
+  return { normal: appearance as T };
 };
 
 // Examples:

@@ -29,6 +29,7 @@ import {
   PDFPageDrawSquareOptions,
   PDFPageDrawSVGOptions,
   PDFPageDrawTextOptions,
+  PDFPageDrawLinkOptions,
   BlendMode,
 } from 'src/api/PDFPageOptions';
 import { degrees, Rotation, toDegrees } from 'src/api/rotations';
@@ -42,6 +43,7 @@ import {
   PDFRef,
   PDFDict,
   PDFArray,
+  PDFLinkAnnotation,
 } from 'src/core';
 import {
   assertEachIs,
@@ -1534,6 +1536,101 @@ export default class PDFPage {
     const { size = 100 } = options;
     assertOrUndefined(size, 'size', ['number']);
     this.drawEllipse({ ...options, xScale: size, yScale: size });
+  }
+
+  /**
+   * Adiciona um link clicável a esta página.
+   *
+   * Links podem apontar para URLs externas ou outras páginas do documento.
+   *
+   * Por exemplo:
+   * ```js
+   * // Link para URL externa
+   * page.drawLink({
+   *   url: 'https://pdf-lib.js.org',
+   *   x: 50,
+   *   y: 50,
+   *   width: 200,
+   *   height: 20,
+   *   borderColor: rgb(0, 0, 1),
+   *   borderWidth: 1,
+   * })
+   *
+   * // Link para outra página do documento
+   * page.drawLink({
+   *   pageNumber: 5,
+   *   x: 50,
+   *   y: 100,
+   *   width: 200,
+   *   height: 20,
+   * })
+   * ```
+   *
+   * @param options As opções para o link a ser adicionado.
+   * @returns A referência da anotação de link criada.
+   */
+  drawLink(options: PDFPageDrawLinkOptions): PDFRef {
+    assertIs(options.x, 'options.x', ['number']);
+    assertIs(options.y, 'options.y', ['number']);
+    assertIs(options.width, 'options.width', ['number']);
+    assertIs(options.height, 'options.height', ['number']);
+    assertOrUndefined(options.url, 'options.url', ['string']);
+    assertOrUndefined(options.pageNumber, 'options.pageNumber', ['number']);
+    assertOrUndefined(options.borderColor, 'options.borderColor', [
+      [Object, 'Color'],
+    ]);
+    assertOrUndefined(options.borderWidth, 'options.borderWidth', ['number']);
+
+    if (!options.url && options.pageNumber === undefined) {
+      throw new Error(
+        'drawLink requer "url" ou "pageNumber" nas opções',
+      );
+    }
+
+    // Cria a anotação de link
+    const link = PDFLinkAnnotation.create(this.doc.context);
+
+    // Define o retângulo do link
+    link.setRectangle({
+      x: options.x,
+      y: options.y,
+      width: options.width,
+      height: options.height,
+    });
+
+    // Define o destino
+    if (options.url) {
+      link.setURI(options.url);
+    } else if (options.pageNumber !== undefined) {
+      const pages = this.doc.getPages();
+      if (options.pageNumber < 0 || options.pageNumber >= pages.length) {
+        throw new Error(
+          `Página ${options.pageNumber} não existe no documento`,
+        );
+      }
+      const targetPage = pages[options.pageNumber];
+      link.setDestination(targetPage.ref);
+    }
+
+    // Configura a borda
+    if (options.borderWidth !== undefined && options.borderWidth > 0) {
+      link.setBorder({
+        horizontalCornerRadius: 0,
+        verticalCornerRadius: 0,
+        width: options.borderWidth,
+      });
+      if (options.borderColor) {
+        link.setBorderColor(options.borderColor);
+      }
+    } else {
+      link.removeBorder();
+    }
+
+    // Registra a anotação e adiciona à página
+    const linkRef = this.doc.context.register(link.dict);
+    this.node.addAnnot(linkRef);
+
+    return linkRef;
   }
 
   private setOrEmbedFont(font?: PDFFont) {

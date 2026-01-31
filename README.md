@@ -1,31 +1,36 @@
-<a href="https://pdf-lib.js.org">
 <h1 align="center">
-<img alt="pdf-lib" height="300" src="https://raw.githubusercontent.com/Hopding/pdf-lib-docs/master/assets/logo-full.svg?sanitize=true">
+  @maxwbh/pdf-lib
 </h1>
-</a>
 
 <div align="center">
   <strong>Create and modify PDF documents in any JavaScript environment.</strong>
 </div>
 <div align="center">
-  Designed to work in any modern JavaScript runtime. Tested in Node, Browser, Deno, and React Native environments.
+  Extended fork with encryption, incremental save, and hyperlinks support.
 </div>
 
 <br />
 
 <div align="center">
   <!-- NPM Version -->
-  <a href="https://www.npmjs.com/package/pdf-lib">
+  <a href="https://www.npmjs.com/package/@maxwbh/pdf-lib">
     <img
-      src="https://img.shields.io/npm/v/pdf-lib.svg?style=flat-square"
+      src="https://img.shields.io/npm/v/@maxwbh/pdf-lib.svg?style=flat-square"
       alt="NPM Version"
     />
   </a>
-  <!-- Build Status -->
-  <a href="https://circleci.com/gh/Hopding/pdf-lib">
+  <!-- NPM Downloads -->
+  <a href="https://www.npmjs.com/package/@maxwbh/pdf-lib">
     <img
-      src="https://img.shields.io/circleci/project/github/Hopding/pdf-lib/master.svg?style=flat-square&label=CircleCI"
-      alt="CircleCI Build Status"
+      src="https://img.shields.io/npm/dm/@maxwbh/pdf-lib.svg?style=flat-square"
+      alt="NPM Downloads"
+    />
+  </a>
+  <!-- License -->
+  <a href="https://github.com/Maxwbh/pdf-lib/blob/main/LICENSE.md">
+    <img
+      src="https://img.shields.io/npm/l/@maxwbh/pdf-lib.svg?style=flat-square"
+      alt="License"
     />
   </a>
   <!-- Prettier Badge -->
@@ -35,18 +40,13 @@
       alt="Prettier Badge"
     />
   </a>
-  <!-- Discord Badge -->
-  <a href="https://discord.gg/Y7uuVMc">
-    <img
-      src="https://img.shields.io/static/v1?label=discord&message=pdf-lib&color=566fbb&style=flat-square"
-      alt="Discord Badge"
-    />
-  </a>
 </div>
 
 <br />
 
-> **Learn more at [pdf-lib.js.org](https://pdf-lib.js.org)**
+> **This is an extended fork of [pdf-lib](https://github.com/Hopding/pdf-lib) with additional features.**
+>
+> **Documentação em Português: [docs/DOCUMENTACAO_PT.md](docs/DOCUMENTACAO_PT.md)**
 
 ## Table of Contents
 
@@ -86,6 +86,16 @@
 - [License](#license)
 
 ## Features
+
+### New in this fork (v1.18.0+)
+
+- **Encrypt PDFs** - Password protect documents with RC4 or AES encryption
+- **Decrypt PDFs** - Open password-protected PDF files
+- **Incremental Save** - Preserve digital signatures when modifying signed PDFs
+- **Hyperlinks** - Add clickable links (URLs and internal page navigation)
+- **Granular Permissions** - Control printing, copying, modifying, etc.
+
+### Original features
 
 - Create new PDFs
 - Modify existing PDFs
@@ -1004,6 +1014,103 @@ const pdfBytes = await pdfDoc.save()
 //   • Rendered in an <iframe>
 ```
 
+### Encrypt Document
+
+```js
+import { PDFDocument } from '@maxwbh/pdf-lib'
+
+// Create a new PDFDocument
+const pdfDoc = await PDFDocument.create()
+const page = pdfDoc.addPage()
+page.drawText('This PDF is password protected!')
+
+// Save with encryption
+const pdfBytes = await pdfDoc.save({
+  encrypt: {
+    userPassword: 'user123',      // Password to open the PDF
+    ownerPassword: 'owner456',    // Password for full access
+    permissions: {
+      printing: true,             // Allow printing
+      copying: false,             // Disallow copying content
+      modifying: false,           // Disallow modifications
+    },
+  },
+})
+```
+
+### Open Encrypted Document
+
+```js
+import { PDFDocument } from '@maxwbh/pdf-lib'
+import fs from 'fs'
+
+// Read encrypted PDF
+const encryptedPdfBytes = fs.readFileSync('protected.pdf')
+
+// Open with password
+const pdfDoc = await PDFDocument.load(encryptedPdfBytes, {
+  password: 'user123',
+})
+
+// Now you can read/modify the document
+const pages = pdfDoc.getPages()
+console.log(`PDF has ${pages.length} pages`)
+```
+
+### Add Hyperlinks
+
+```js
+import { PDFDocument, rgb } from '@maxwbh/pdf-lib'
+
+const pdfDoc = await PDFDocument.create()
+const page = pdfDoc.addPage([600, 400])
+
+// Draw text for the link
+page.drawText('Visit our website', {
+  x: 50,
+  y: 300,
+  size: 16,
+  color: rgb(0, 0, 0.8),
+})
+
+// Add clickable link over the text
+page.drawLink({
+  url: 'https://github.com/Maxwbh/pdf-lib',
+  x: 50,
+  y: 295,
+  width: 150,
+  height: 20,
+  borderColor: rgb(0, 0, 1),
+  borderWidth: 1,
+})
+
+const pdfBytes = await pdfDoc.save()
+```
+
+### Incremental Save (Preserve Signatures)
+
+```js
+import { PDFDocument } from '@maxwbh/pdf-lib'
+import fs from 'fs'
+
+// Load a signed PDF
+const signedPdfBytes = fs.readFileSync('signed-document.pdf')
+const pdfDoc = await PDFDocument.load(signedPdfBytes)
+
+// Take a snapshot before modifications
+pdfDoc.takeSnapshot()
+
+// Make modifications (e.g., fill form fields)
+const form = pdfDoc.getForm()
+const field = form.getTextField('date')
+field.setText('2026-01-31')
+
+// Save incrementally to preserve the signature
+const modifiedPdfBytes = await pdfDoc.saveIncremental()
+
+fs.writeFileSync('modified-signed-document.pdf', modifiedPdfBytes)
+```
+
 ## Deno Usage
 
 `pdf-lib` fully supports the exciting new [Deno](https://deno.land/) runtime! All of the [usage examples](#usage-examples) work in Deno. The only thing you need to do is change the imports for `pdf-lib` and `@pdf-lib/fontkit` to use the [Skypack](https://www.skypack.dev/) CDN, because Deno requires all modules to be referenced via URLs.
@@ -1124,35 +1231,53 @@ To install the latest stable version:
 
 ```bash
 # With npm
-npm install --save pdf-lib
+npm install --save @maxwbh/pdf-lib
 
 # With yarn
-yarn add pdf-lib
+yarn add @maxwbh/pdf-lib
 ```
 
 This assumes you're using [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/lang/en/) as your package manager.
 
-### UMD Module
+### Migrating from pdf-lib
 
-You can also download `pdf-lib` as a UMD module from [unpkg](https://unpkg.com/#/) or [jsDelivr](https://www.jsdelivr.com/). The UMD builds have been compiled to ES5, so they should work [in any modern browser](https://caniuse.com/#feat=es5). UMD builds are useful if you aren't using a package manager or module bundler. For example, you can use them directly in the `<script>` tag of an HTML page.
+If you're migrating from the original `pdf-lib`:
 
-The following builds are available:
+```bash
+# Remove old package
+npm uninstall pdf-lib
 
-- https://unpkg.com/pdf-lib/dist/pdf-lib.js
-- https://unpkg.com/pdf-lib/dist/pdf-lib.min.js
-- https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.js
-- https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js
+# Install this fork
+npm install --save @maxwbh/pdf-lib
+```
 
-> **NOTE:** if you are using the CDN scripts in production, you should include a specific version number in the URL, for example:
->
-> - https://unpkg.com/pdf-lib@1.4.0/dist/pdf-lib.min.js
-> - https://cdn.jsdelivr.net/npm/pdf-lib@1.4.0/dist/pdf-lib.min.js
+The API is fully backward compatible. Just update your imports:
 
-When using a UMD build, you will have access to a global `window.PDFLib` variable. This variable contains all of the classes and functions exported by `pdf-lib`. For example:
+```javascript
+// Before
+import { PDFDocument } from 'pdf-lib';
+
+// After
+import { PDFDocument } from '@maxwbh/pdf-lib';
+```
+
+### UMD Module (CDN)
+
+You can also use `@maxwbh/pdf-lib` directly in the browser via [jsDelivr](https://www.jsdelivr.com/):
+
+```html
+<!-- Latest version -->
+<script src="https://cdn.jsdelivr.net/npm/@maxwbh/pdf-lib/dist/pdf-lib.min.js"></script>
+
+<!-- Specific version -->
+<script src="https://cdn.jsdelivr.net/npm/@maxwbh/pdf-lib@1.18.0/dist/pdf-lib.min.js"></script>
+```
+
+When using a UMD build, you will have access to a global `window.PDFLib` variable:
 
 ```javascript
 // NPM module
-import { PDFDocument, rgb } from 'pdf-lib';
+import { PDFDocument, rgb } from '@maxwbh/pdf-lib';
 
 // UMD module
 var PDFDocument = PDFLib.PDFDocument;

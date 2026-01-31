@@ -14,6 +14,14 @@ import { InvalidPDFDateStringError } from 'src/core/errors';
 class PDFHexString extends PDFObject {
   static of = (value: string) => new PDFHexString(value);
 
+  static fromBytes = (bytes: Uint8Array) => {
+    let hex = '';
+    for (let idx = 0, len = bytes.length; idx < len; idx++) {
+      hex += toHexStringOfMinLength(bytes[idx], 2);
+    }
+    return new PDFHexString(hex);
+  };
+
   static fromText = (value: string) => {
     const encoded = utf16Encode(value);
 

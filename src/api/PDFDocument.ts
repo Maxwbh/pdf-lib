@@ -34,7 +34,14 @@ import {
   PngEmbedder,
   StandardFontEmbedder,
   UnexpectedObjectTypeError,
+  PDFSecurity,
+  PDFArray,
 } from 'src/core';
+import PDFIncrementalWriter, {
+  DocumentSnapshot,
+  createDocumentSnapshot,
+  markRefAsModified,
+} from 'src/core/writers/PDFIncrementalWriter';
 import {
   ParseSpeeds,
   AttachmentOptions,
@@ -44,6 +51,7 @@ import {
   CreateOptions,
   EmbedFontOptions,
   SetTitleOptions,
+  IncrementalSaveOptions,
 } from 'src/api/PDFDocumentOptions';
 import PDFObject from 'src/core/objects/PDFObject';
 import PDFRef from 'src/core/objects/PDFRef';
@@ -133,6 +141,7 @@ export default class PDFDocument {
       throwOnInvalidObject = false,
       updateMetadata = true,
       capNumbers = false,
+      password,
     } = options;
 
     assertIs(pdf, 'pdf', ['string', Uint8Array, ArrayBuffer]);
@@ -147,7 +156,13 @@ export default class PDFDocument {
       throwOnInvalidObject,
       capNumbers,
     ).parseDocument();
-    return new PDFDocument(context, ignoreEncryption, updateMetadata);
+    return new PDFDocument(
+      context,
+      ignoreEncryption,
+      updateMetadata,
+      bytes,
+      password,
+    );
   }
 
   /**
@@ -189,10 +204,19 @@ export default class PDFDocument {
   private readonly embeddedFiles: PDFEmbeddedFile[];
   private readonly javaScripts: PDFJavaScript[];
 
+  /** Bytes originais do documento para salvamento incremental */
+  private originalBytes?: Uint8Array;
+  /** Snapshot do documento para salvamento incremental */
+  private snapshot?: DocumentSnapshot;
+  /** Gerenciador de segurança do documento */
+  private security?: PDFSecurity;
+
   private constructor(
     context: PDFContext,
     ignoreEncryption: boolean,
     updateMetadata: boolean,
+    originalBytes?: Uint8Array,
+    password?: string,
   ) {
     assertIs(context, 'context', [[PDFContext, 'PDFContext']]);
     assertIs(ignoreEncryption, 'ignoreEncryption', ['boolean']);
@@ -200,6 +224,7 @@ export default class PDFDocument {
     this.context = context;
     this.catalog = context.lookup(context.trailerInfo.Root) as PDFCatalog;
     this.isEncrypted = !!context.lookup(context.trailerInfo.Encrypt);
+    this.originalBytes = originalBytes;
 
     this.pageCache = Cache.populatedBy(this.computePages);
     this.pageMap = new Map();
@@ -210,7 +235,21 @@ export default class PDFDocument {
     this.embeddedFiles = [];
     this.javaScripts = [];
 
-    if (!ignoreEncryption && this.isEncrypted) throw new EncryptedPDFError();
+    // Tenta decriptar se o documento estiver criptografado
+    if (this.isEncrypted && !ignoreEncryption) {
+      const encryptDict = context.lookup(
+        context.trailerInfo.Encrypt,
+        PDFDict,
+      );
+      this.security = new PDFSecurity(context);
+      const decrypted = this.security.loadFromEncryptDict(
+        encryptDict,
+        password || '',
+      );
+      if (!decrypted) {
+        throw new EncryptedPDFError();
+      }
+    }
 
     if (updateMetadata) this.updateInfoDict();
   }
@@ -1270,6 +1309,7 @@ export default class PDFDocument {
       addDefaultPage = true,
       objectsPerTick = 50,
       updateFieldAppearances = true,
+      encrypt,
     } = options;
 
     assertIs(useObjectStreams, 'useObjectStreams', ['boolean']);
@@ -1286,8 +1326,130 @@ export default class PDFDocument {
 
     await this.flush();
 
+    // Configura criptografia se solicitada
+    if (encrypt) {
+      this.setupEncryption(encrypt);
+    }
+
     const Writer = useObjectStreams ? PDFStreamWriter : PDFWriter;
     return Writer.forContext(this.context, objectsPerTick).serializeToBuffer();
+  }
+
+  /**
+   * Cria um snapshot do documento para salvamento incremental posterior.
+   * Isso é útil para adicionar assinaturas digitais ou fazer modificações
+   * que precisam preservar o documento original.
+   *
+   * Por exemplo:
+   * ```js
+   * const pdfDoc = await PDFDocument.load(existingPdfBytes)
+   * pdfDoc.takeSnapshot()
+   *
+   * // Faz modificações...
+   * const page = pdfDoc.getPage(0)
+   * page.drawText('Assinado digitalmente')
+   *
+   * // Salva incrementalmente (preserva o documento original)
+   * const incrementalBytes = await pdfDoc.saveIncremental()
+   * ```
+   */
+  takeSnapshot(): void {
+    if (!this.originalBytes) {
+      throw new Error(
+        'Snapshot só pode ser criado para documentos carregados de bytes existentes',
+      );
+    }
+    this.snapshot = createDocumentSnapshot(this.originalBytes);
+  }
+
+  /**
+   * Marca uma referência de objeto como modificada para salvamento incremental.
+   *
+   * @param ref A referência do objeto modificado
+   */
+  markRefForSave(ref: PDFRef): void {
+    if (!this.snapshot) {
+      throw new Error('Nenhum snapshot foi criado. Chame takeSnapshot() primeiro.');
+    }
+    markRefAsModified(this.snapshot, ref);
+  }
+
+  /**
+   * Salva o documento de forma incremental, adicionando apenas as modificações
+   * ao final do documento original. Isso é essencial para:
+   * - Preservar assinaturas digitais existentes
+   * - Manter a trilha de auditoria do documento
+   * - Maior eficiência com arquivos grandes
+   *
+   * Por exemplo:
+   * ```js
+   * const pdfDoc = await PDFDocument.load(existingPdfBytes)
+   * pdfDoc.takeSnapshot()
+   *
+   * // Modifica o documento...
+   * const page = pdfDoc.getPage(0)
+   * page.drawText('Texto adicionado')
+   * pdfDoc.markRefForSave(page.ref)
+   *
+   * // Salva incrementalmente
+   * const newBytes = await pdfDoc.saveIncremental()
+   * ```
+   *
+   * @param options Opções de salvamento
+   * @returns Os bytes do documento com as modificações incrementais
+   */
+  async saveIncremental(
+    options: IncrementalSaveOptions = {},
+  ): Promise<Uint8Array> {
+    const { objectsPerTick = 50, updateFieldAppearances = true } = options;
+
+    if (!this.snapshot) {
+      throw new Error('Nenhum snapshot foi criado. Chame takeSnapshot() primeiro.');
+    }
+
+    if (updateFieldAppearances) {
+      const form = this.formCache.getValue();
+      if (form) form.updateFieldAppearances();
+    }
+
+    await this.flush();
+
+    return PDFIncrementalWriter.forContext(
+      this.context,
+      this.snapshot,
+      objectsPerTick,
+    ).serializeToBuffer();
+  }
+
+  /**
+   * Configura criptografia para o documento.
+   * Usado internamente pelo método save() quando opções de criptografia são fornecidas.
+   */
+  private setupEncryption(options: {
+    userPassword?: string;
+    ownerPassword: string;
+    permissions?: import('src/core/crypto/PDFSecurity').PDFPermissions;
+    version?: 1 | 2 | 4 | 5;
+  }): void {
+    this.security = new PDFSecurity(this.context);
+    this.security.setupEncryption({
+      userPassword: options.userPassword,
+      ownerPassword: options.ownerPassword,
+      permissions: options.permissions,
+      version: options.version,
+    });
+
+    // Cria e registra o dicionário Encrypt
+    const encryptDict = this.security.createEncryptDict();
+    const encryptRef = this.context.register(encryptDict);
+    this.context.trailerInfo.Encrypt = encryptRef;
+
+    // Cria/atualiza o array ID do documento
+    const documentId = this.security.getDocumentId();
+    const idArray = PDFArray.withContext(this.context);
+    idArray.push(PDFHexString.fromBytes(documentId));
+    idArray.push(PDFHexString.fromBytes(documentId));
+    this.context.trailerInfo.ID = idArray;
   }
 
   /**

@@ -1,6 +1,15 @@
 {
   "extends": "../tsconfig.json",
-  "include": ["./**/*"],
+  "compilerOptions": {
+    "baseUrl": "..",
+    "paths": {
+      "src/*": ["./src/*"]
+    },
+    "outDir": null,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false
+  },
+  "include": ["./**/*", "../src/**/*"],
   "rootDir": null,
   "rootDirs": ["../src", "../tests"]
 }
