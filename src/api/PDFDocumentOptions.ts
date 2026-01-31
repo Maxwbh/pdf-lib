@@ -1,5 +1,6 @@
 import { EmbeddedFileOptions } from 'src/core/embedders/FileEmbedder';
 import { TypeFeatures } from 'src/types/fontkit';
+import { PDFPermissions } from 'src/core/crypto/PDFSecurity';
 
 export enum ParseSpeeds {
   Fastest = Infinity,
@@ -10,10 +11,42 @@ export enum ParseSpeeds {
 
 export interface AttachmentOptions extends EmbeddedFileOptions {}
 
+/**
+ * Opções de criptografia para salvar PDFs protegidos.
+ */
+export interface EncryptOptions {
+  /** Senha do usuário (permite abrir o documento) */
+  userPassword?: string;
+  /** Senha do proprietário (permite acesso total) */
+  ownerPassword: string;
+  /** Permissões do documento */
+  permissions?: PDFPermissions;
+  /**
+   * Versão da criptografia:
+   * - 1: 40-bit RC4 (PDF 1.1+)
+   * - 2: 128-bit RC4 (PDF 1.4+)
+   * - 4: 128-bit AES (PDF 1.5+)
+   * - 5: 256-bit AES (PDF 1.7+)
+   */
+  version?: 1 | 2 | 4 | 5;
+}
+
 export interface SaveOptions {
   useObjectStreams?: boolean;
   addDefaultPage?: boolean;
   objectsPerTick?: number;
+  updateFieldAppearances?: boolean;
+  /** Opções de criptografia para proteger o documento */
+  encrypt?: EncryptOptions;
+}
+
+/**
+ * Opções para salvamento incremental.
+ */
+export interface IncrementalSaveOptions {
+  /** Número de objetos processados por tick */
+  objectsPerTick?: number;
+  /** Atualiza aparências de campos de formulário */
   updateFieldAppearances?: boolean;
 }
 
@@ -27,6 +60,8 @@ export interface LoadOptions {
   throwOnInvalidObject?: boolean;
   updateMetadata?: boolean;
   capNumbers?: boolean;
+  /** Senha para abrir o documento criptografado */
+  password?: string;
 }
 
 export interface CreateOptions {
@@ -42,3 +77,5 @@ export interface EmbedFontOptions {
 export interface SetTitleOptions {
   showInWindowTitleBar: boolean;
 }
+
+export { PDFPermissions };
