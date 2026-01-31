@@ -438,17 +438,17 @@ export class PDFSecurity {
     const keyLength = this.keyLength / 8;
     const key = hash.slice(0, keyLength);
 
-    let result = new Uint8Array(this.ownerKey!);
+    let result: Uint8Array = Uint8Array.from(this.ownerKey!);
 
     if (this.revision === 2) {
-      result = rc4Encrypt(key, result);
+      result = Uint8Array.from(rc4Encrypt(key, result));
     } else {
       for (let i = 19; i >= 0; i--) {
         const tempKey = new Uint8Array(keyLength);
         for (let j = 0; j < keyLength; j++) {
           tempKey[j] = key[j] ^ i;
         }
-        result = rc4Encrypt(tempKey, result);
+        result = Uint8Array.from(rc4Encrypt(tempKey, result));
       }
     }
 
