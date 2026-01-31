@@ -255,6 +255,61 @@ Este documento foi gerado a partir da análise dos forks mais populares do pdf-l
 
 ---
 
+### 6. DISTRIBUIÇÃO E PUBLICAÇÃO
+
+#### 6.1 Publicação no NPM
+- **Status**: ⏳ Avaliar
+- **Descrição**: Publicar o fork como pacote NPM independente
+- **Nome sugerido**: `@maxwbh/pdf-lib` ou `pdf-lib-extended`
+- **Benefícios**:
+  - Instalação simples via `npm install`
+  - Versionamento semântico
+  - Gerenciamento de dependências automático
+- **Requisitos**:
+  - Conta NPM configurada
+  - Arquivo `package.json` atualizado com novo nome/escopo
+  - README com instruções de migração
+  - CHANGELOG documentando diferenças do original
+- **Comandos**:
+  ```bash
+  npm login
+  npm publish --access public
+  ```
+
+#### 6.2 Distribuição via jsDelivr (CDN)
+- **Status**: ⏳ Avaliar
+- **Descrição**: Disponibilizar via CDN para uso direto em browsers
+- **Benefícios**:
+  - Sem necessidade de build local
+  - Cache global, baixa latência
+  - Suporte a versões específicas
+- **URLs após publicação NPM**:
+  ```html
+  <!-- Última versão -->
+  <script src="https://cdn.jsdelivr.net/npm/@maxwbh/pdf-lib/dist/pdf-lib.min.js"></script>
+
+  <!-- Versão específica -->
+  <script src="https://cdn.jsdelivr.net/npm/@maxwbh/pdf-lib@1.18.0/dist/pdf-lib.min.js"></script>
+  ```
+- **Alternativa via GitHub**:
+  ```html
+  <script src="https://cdn.jsdelivr.net/gh/Maxwbh/pdf-lib@main/dist/pdf-lib.min.js"></script>
+  ```
+
+#### 6.3 Preparação para Publicação
+- **Checklist**:
+  - [ ] Atualizar `package.json` com novo nome/escopo
+  - [ ] Atualizar versão para `1.18.0` (indica novas features)
+  - [ ] Criar/atualizar `CHANGELOG.md`
+  - [ ] Atualizar `README.md` com novas funcionalidades
+  - [ ] Executar build de produção (`npm run build`)
+  - [ ] Executar todos os testes (`npm test`)
+  - [ ] Verificar arquivos em `dist/`
+  - [ ] Configurar `.npmignore` adequadamente
+  - [ ] Adicionar badges no README (npm version, downloads, etc.)
+
+---
+
 ## Roadmap Sugerido
 
 ### Fase 1 - Fundação (Semanas 1-4)
