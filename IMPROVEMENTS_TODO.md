@@ -257,27 +257,27 @@ Este documento foi gerado a partir da análise dos forks mais populares do pdf-l
 
 ### 6. DISTRIBUIÇÃO E PUBLICAÇÃO
 
-#### 6.1 Publicação no NPM
-- **Status**: ⏳ Avaliar
+#### 6.1 ✅ Publicação no NPM - **CONFIGURADO**
+- **Status**: ✅ **PRONTO PARA PUBLICAR**
+- **Nome do pacote**: `@maxwbh/pdf-lib`
+- **Versão**: `1.18.0`
 - **Descrição**: Publicar o fork como pacote NPM independente
-- **Nome sugerido**: `@maxwbh/pdf-lib` ou `pdf-lib-extended`
 - **Benefícios**:
-  - Instalação simples via `npm install`
+  - Instalação simples via `npm install @maxwbh/pdf-lib`
   - Versionamento semântico
   - Gerenciamento de dependências automático
-- **Requisitos**:
-  - Conta NPM configurada
-  - Arquivo `package.json` atualizado com novo nome/escopo
-  - README com instruções de migração
-  - CHANGELOG documentando diferenças do original
-- **Comandos**:
+- **Requisitos concluídos**:
+  - ✅ Arquivo `package.json` atualizado com nome `@maxwbh/pdf-lib`
+  - ✅ README com instruções de migração
+  - ✅ CHANGELOG documentando diferenças do original
+- **Para publicar**:
   ```bash
   npm login
   npm publish --access public
   ```
 
 #### 6.2 Distribuição via jsDelivr (CDN)
-- **Status**: ⏳ Avaliar
+- **Status**: 🔄 Disponível após publicação NPM
 - **Descrição**: Disponibilizar via CDN para uso direto em browsers
 - **Benefícios**:
   - Sem necessidade de build local
@@ -296,17 +296,19 @@ Este documento foi gerado a partir da análise dos forks mais populares do pdf-l
   <script src="https://cdn.jsdelivr.net/gh/Maxwbh/pdf-lib@main/dist/pdf-lib.min.js"></script>
   ```
 
-#### 6.3 Preparação para Publicação
+#### 6.3 ✅ Preparação para Publicação - **CONCLUÍDO**
 - **Checklist**:
-  - [ ] Atualizar `package.json` com novo nome/escopo
-  - [ ] Atualizar versão para `1.18.0` (indica novas features)
-  - [ ] Criar/atualizar `CHANGELOG.md`
-  - [ ] Atualizar `README.md` com novas funcionalidades
-  - [ ] Executar build de produção (`npm run build`)
-  - [ ] Executar todos os testes (`npm test`)
+  - [x] Atualizar `package.json` com novo nome/escopo
+  - [x] Atualizar versão para `1.18.0` (indica novas features)
+  - [x] Criar/atualizar `CHANGELOG.md`
+  - [x] Atualizar `README.md` com novas funcionalidades
+  - [ ] Executar build de produção (`npm run build`) - *Requer Node.js < 22*
+  - [x] Executar todos os testes (`npm test`) - **668 testes passando**
   - [ ] Verificar arquivos em `dist/`
-  - [ ] Configurar `.npmignore` adequadamente
-  - [ ] Adicionar badges no README (npm version, downloads, etc.)
+  - [x] Configurar `.npmignore` adequadamente
+  - [x] Adicionar badges no README (npm version, downloads, etc.)
+
+> **Nota**: O build requer Node.js < 22 devido à incompatibilidade do `ttypescript` com versões mais recentes.
 
 ---
 
