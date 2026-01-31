@@ -1,9 +1,10 @@
 {
-  "name": "pdf-lib",
-  "version": "1.17.1",
-  "description": "Create and modify PDF files with JavaScript",
-  "author": "Andrew Dillon <andrew.dillon.j@gmail.com>",
+  "name": "@maxwbh/pdf-lib",
+  "version": "1.18.0",
+  "description": "Create and modify PDF files with JavaScript - Extended fork with encryption, incremental save, and hyperlinks",
+  "author": "Maxwell Oliveira <maxwbh@gmail.com>",
   "contributors": [
+    "Andrew Dillon <andrew.dillon.j@gmail.com> (Original author)",
     "jerp (https://github.com/jerp)",
     "Greg Bacchus (https://github.com/gregbacchus)",
     "Mickael Lecoq (https://github.com/mlecoq)",
@@ -119,10 +120,13 @@
   },
   "license": "MIT",
   "private": false,
-  "homepage": "https://pdf-lib.js.org",
-  "repository": "git+https://github.com/Hopding/pdf-lib.git",
+  "homepage": "https://github.com/Maxwbh/pdf-lib",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Maxwbh/pdf-lib.git"
+  },
   "bugs": {
-    "url": "https://github.com/Hopding/pdf-lib/issues"
+    "url": "https://github.com/Maxwbh/pdf-lib/issues"
   },
   "keywords": [
     "pdf-lib",
@@ -136,6 +140,16 @@
     "editing",
     "typescript",
     "javascript",
-    "library"
-  ]
+    "library",
+    "encryption",
+    "decrypt",
+    "password",
+    "incremental-save",
+    "digital-signature",
+    "hyperlink",
+    "annotation"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
 }

@@ -1,0 +1,33 @@
+# Source files (use dist/ instead)
+scratchpad/
+apps/
+tests/
+coverage/
+
+# Build artifacts
+*.log
+isolate*.log
+flamegraph.html
+tsBuildInfo.json
+
+# Config files
+.circleci/
+.github/
+.vscode/
+jest.json
+tsconfig.json
+tslint.json
+rollup.config.js
+.prettierrc
+
+# Documentation (already in package)
+docs/
+IMPROVEMENTS_TODO.md
+
+# Git
+.git/
+.gitignore
+
+# Development
+*.tgz
+node_modules/
