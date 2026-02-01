@@ -313,6 +313,70 @@ const pdfDoc = await PDFDocument.load(bytes, {
 });
 ```
 
+### Salvando e Baixando PDFs
+
+#### Salvar no Node.js
+
+```javascript
+import fs from 'fs';
+
+const pdfBytes = await pdfDoc.save();
+fs.writeFileSync('documento.pdf', pdfBytes);
+```
+
+#### Baixar no Browser
+
+```javascript
+// Salvar o PDF
+const pdfBytes = await pdfDoc.save();
+
+// Criar Blob e URL
+const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+const url = URL.createObjectURL(blob);
+
+// Criar link e disparar download
+const link = document.createElement('a');
+link.href = url;
+link.download = 'documento.pdf';
+link.click();
+
+// Liberar memória
+URL.revokeObjectURL(url);
+```
+
+#### Abrir em Nova Aba (Browser)
+
+```javascript
+const pdfBytes = await pdfDoc.save();
+const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+const url = URL.createObjectURL(blob);
+
+// Abrir em nova aba
+window.open(url, '_blank');
+```
+
+#### Exibir em iframe (Browser)
+
+```javascript
+const pdfBytes = await pdfDoc.save();
+const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+const url = URL.createObjectURL(blob);
+
+// Exibir em iframe
+const iframe = document.getElementById('pdf-viewer');
+iframe.src = url;
+```
+
+#### Salvar como Base64
+
+```javascript
+const pdfBase64 = await pdfDoc.saveAsBase64();
+
+// Com data URI (útil para emails, APIs, etc.)
+const pdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true });
+// Resultado: "data:application/pdf;base64,JVBERi0xLj..."
+```
+
 ---
 
 ## Criptografia
