@@ -1,4 +1,64 @@
-The latest release of `pdf-lib` (`v1.0.0`) includes several breaking API changes. If you have code written for older versions of `pdf-lib` (`v0.x.x`), you can use the following instructions to help migrate your code to v1.0.0.
+# Migration Guide
+
+## Migrating from pdf-lib to @maxwbh/pdf-lib
+
+If you're using the original `pdf-lib` and want to use this fork with additional features:
+
+1. **Update your package.json:**
+   ```diff
+   - "pdf-lib": "^1.17.1"
+   + "@maxwbh/pdf-lib": "^1.18.0"
+   ```
+
+2. **Update your imports:**
+   ```javascript
+   // Before
+   import { PDFDocument } from 'pdf-lib';
+
+   // After
+   import { PDFDocument } from '@maxwbh/pdf-lib';
+   ```
+
+3. **Run install:**
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
+
+The API is **100% backward compatible**. All your existing code will work without changes.
+
+### New Features Available
+
+After migrating, you can use these new features:
+
+```javascript
+// Open encrypted PDFs
+const pdfDoc = await PDFDocument.load(bytes, { password: 'secret' });
+
+// Encrypt when saving
+const pdfBytes = await pdfDoc.save({
+  encrypt: {
+    userPassword: 'user123',
+    ownerPassword: 'owner456',
+    permissions: { printing: true, copying: false },
+  },
+});
+
+// Add hyperlinks
+page.drawLink({ url: 'https://example.com', x: 50, y: 300, width: 100, height: 20 });
+
+// Preserve signatures with incremental save
+pdfDoc.takeSnapshot();
+// ... make changes ...
+const pdfBytes = await pdfDoc.saveIncremental();
+```
+
+---
+
+## Migrating from pdf-lib v0.x.x to v1.0.0
+
+The release of `pdf-lib` v1.0.0 included several breaking API changes. If you have code written for older versions of `pdf-lib` (`v0.x.x`), you can use the following instructions to help migrate your code to v1.0.0.
 
 Note that many of the API methods are now asynchronous and return promises, so you'll need to `await` on them (or use promise chaining: `.then(res => ...)`).
 
