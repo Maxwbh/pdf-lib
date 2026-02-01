@@ -1,4 +1,7 @@
-# pdf-lib - Documentação em Português
+# @maxwbh/pdf-lib - Documentação em Português
+
+[![NPM Version](https://img.shields.io/npm/v/@maxwbh/pdf-lib.svg?style=flat-square)](https://www.npmjs.com/package/@maxwbh/pdf-lib)
+[![NPM Downloads](https://img.shields.io/npm/dm/@maxwbh/pdf-lib.svg?style=flat-square)](https://www.npmjs.com/package/@maxwbh/pdf-lib)
 
 ## Índice
 
@@ -19,7 +22,9 @@
 
 ## Introdução
 
-O **pdf-lib** é uma biblioteca JavaScript pura para criar e modificar documentos PDF em qualquer ambiente JavaScript (Node.js, navegadores, React Native, Deno, etc.).
+O **@maxwbh/pdf-lib** é um fork estendido da biblioteca pdf-lib com funcionalidades adicionais como criptografia, salvamento incremental e hyperlinks.
+
+É uma biblioteca JavaScript pura para criar e modificar documentos PDF em qualquer ambiente JavaScript (Node.js, navegadores, React Native, Deno, etc.).
 
 ### Principais Características
 
@@ -29,8 +34,10 @@ O **pdf-lib** é uma biblioteca JavaScript pura para criar e modificar documento
 - **Dividir** um PDF em múltiplos documentos
 - **Adicionar** texto, imagens e gráficos vetoriais
 - **Preencher** formulários PDF
-- **Criptografar** documentos com proteção por senha
+- **Criptografar** documentos com proteção por senha (RC4/AES)
+- **Descriptografar** PDFs protegidos
 - **Salvamento incremental** para preservar assinaturas digitais
+- **Hyperlinks** para URLs e navegação interna
 
 ---
 
@@ -39,19 +46,43 @@ O **pdf-lib** é uma biblioteca JavaScript pura para criar e modificar documento
 ### npm
 
 ```bash
-npm install pdf-lib
+npm install @maxwbh/pdf-lib
 ```
 
 ### yarn
 
 ```bash
-yarn add pdf-lib
+yarn add @maxwbh/pdf-lib
 ```
 
-### CDN
+### CDN (jsDelivr)
 
 ```html
-<script src="https://unpkg.com/pdf-lib"></script>
+<!-- Última versão -->
+<script src="https://cdn.jsdelivr.net/npm/@maxwbh/pdf-lib/dist/pdf-lib.min.js"></script>
+
+<!-- Versão específica -->
+<script src="https://cdn.jsdelivr.net/npm/@maxwbh/pdf-lib@1.18.0/dist/pdf-lib.min.js"></script>
+```
+
+### Migrando do pdf-lib original
+
+```bash
+# Remover pacote antigo
+npm uninstall pdf-lib
+
+# Instalar este fork
+npm install @maxwbh/pdf-lib
+```
+
+Atualize seus imports:
+
+```javascript
+// Antes
+import { PDFDocument } from '@maxwbh/pdf-lib';
+
+// Depois
+import { PDFDocument } from '@maxwbh/pdf-lib';
 ```
 
 ---
@@ -61,7 +92,7 @@ yarn add pdf-lib
 ### Exemplo Básico
 
 ```javascript
-import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
+import { PDFDocument, StandardFonts, rgb } from '@maxwbh/pdf-lib';
 
 async function criarPDF() {
   // Cria um novo documento PDF
@@ -96,7 +127,7 @@ async function criarPDF() {
 ### Tamanhos de Página Disponíveis
 
 ```javascript
-import { PageSizes } from 'pdf-lib';
+import { PageSizes } from '@maxwbh/pdf-lib';
 
 // Tamanhos predefinidos
 pdfDoc.addPage(PageSizes.A4);        // 595.28 x 841.89 pts
@@ -114,7 +145,7 @@ pdfDoc.addPage([500, 700]);
 ### A partir de Bytes
 
 ```javascript
-import { PDFDocument } from 'pdf-lib';
+import { PDFDocument } from '@maxwbh/pdf-lib';
 import fs from 'fs';
 
 async function carregarPDF() {
@@ -180,7 +211,7 @@ O pdf-lib agora suporta criptografia e descriptografia de documentos PDF usando 
 ### Criando um PDF Criptografado
 
 ```javascript
-import { PDFDocument } from 'pdf-lib';
+import { PDFDocument } from '@maxwbh/pdf-lib';
 
 async function criarPDFCriptografado() {
   const pdfDoc = await PDFDocument.create();
@@ -225,7 +256,7 @@ async function criarPDFCriptografado() {
 ### Abrindo um PDF Criptografado
 
 ```javascript
-import { PDFDocument } from 'pdf-lib';
+import { PDFDocument } from '@maxwbh/pdf-lib';
 
 async function abrirPDFCriptografado() {
   const bytesProtegidos = fs.readFileSync('protegido.pdf');
@@ -271,7 +302,7 @@ O salvamento incremental adiciona modificações ao final do PDF original, sem r
 ### Usando Salvamento Incremental
 
 ```javascript
-import { PDFDocument } from 'pdf-lib';
+import { PDFDocument } from '@maxwbh/pdf-lib';
 
 async function modificarIncrementalmente() {
   // Carrega o PDF existente
@@ -404,7 +435,7 @@ pagina.drawText('Texto simples', {
 ### Texto com Formatação
 
 ```javascript
-import { rgb, StandardFonts } from 'pdf-lib';
+import { rgb, StandardFonts } from '@maxwbh/pdf-lib';
 
 const fonteNegrito = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
@@ -706,7 +737,7 @@ form.flatten();
 ### Criar Relatório com Cabeçalho e Rodapé
 
 ```javascript
-import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
+import { PDFDocument, StandardFonts, rgb } from '@maxwbh/pdf-lib';
 
 async function criarRelatorio() {
   const pdfDoc = await PDFDocument.create();

@@ -27,7 +27,7 @@
     />
   </a>
   <!-- License -->
-  <a href="https://github.com/Maxwbh/pdf-lib/blob/main/LICENSE.md">
+  <a href="https://github.com/Maxwbh/pdf-lib/blob/master/LICENSE.md">
     <img
       src="https://img.shields.io/npm/l/@maxwbh/pdf-lib.svg?style=flat-square"
       alt="License"
