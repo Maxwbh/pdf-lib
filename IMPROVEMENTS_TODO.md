@@ -257,33 +257,28 @@ Este documento foi gerado a partir da análise dos forks mais populares do pdf-l
 
 ### 6. DISTRIBUIÇÃO E PUBLICAÇÃO
 
-#### 6.1 ✅ Publicação no NPM - **CONFIGURADO**
-- **Status**: ✅ **PRONTO PARA PUBLICAR**
+#### 6.1 ✅ Publicação no NPM - **PUBLICADO**
+- **Status**: ✅ **PUBLICADO**
+- **URL**: https://www.npmjs.com/package/@maxwbh/pdf-lib
 - **Nome do pacote**: `@maxwbh/pdf-lib`
 - **Versão**: `1.18.0`
-- **Descrição**: Publicar o fork como pacote NPM independente
+- **Instalação**:
+  ```bash
+  npm install @maxwbh/pdf-lib
+  ```
 - **Benefícios**:
   - Instalação simples via `npm install @maxwbh/pdf-lib`
   - Versionamento semântico
   - Gerenciamento de dependências automático
-- **Requisitos concluídos**:
-  - ✅ Arquivo `package.json` atualizado com nome `@maxwbh/pdf-lib`
-  - ✅ README com instruções de migração
-  - ✅ CHANGELOG documentando diferenças do original
-- **Para publicar**:
-  ```bash
-  npm login
-  npm publish --access public
-  ```
 
-#### 6.2 Distribuição via jsDelivr (CDN)
-- **Status**: 🔄 Disponível após publicação NPM
+#### 6.2 ✅ Distribuição via jsDelivr (CDN) - **DISPONÍVEL**
+- **Status**: ✅ **DISPONÍVEL**
 - **Descrição**: Disponibilizar via CDN para uso direto em browsers
 - **Benefícios**:
   - Sem necessidade de build local
   - Cache global, baixa latência
   - Suporte a versões específicas
-- **URLs após publicação NPM**:
+- **URLs disponíveis**:
   ```html
   <!-- Última versão -->
   <script src="https://cdn.jsdelivr.net/npm/@maxwbh/pdf-lib/dist/pdf-lib.min.js"></script>
