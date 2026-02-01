@@ -1,6 +1,6 @@
 {
   "name": "@maxwbh/pdf-lib",
-  "version": "1.18.0",
+  "version": "1.18.1",
   "description": "Create and modify PDF files with JavaScript - Extended fork with encryption, incremental save, and hyperlinks",
   "author": "Maxwell Oliveira <maxwbh@gmail.com>",
   "contributors": [
