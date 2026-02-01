@@ -1,13 +1,36 @@
-# 🚨⚠️ STOP!!! ⚠️🚨
+# @maxwbh/pdf-lib - Issue Template
 
-👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇
+Thank you for reporting an issue! Please fill out the template below.
 
-**All new issues must be created from a template: https://github.com/Hopding/pdf-lib/issues/new/choose**
+## Issue Type
+- [ ] Bug Report
+- [ ] Feature Request
+- [ ] Question
 
-👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆
+## Description
+<!-- Describe the issue in detail -->
 
-* If you create an issue without using a template it will be closed without comment.
-* Do not create an issue if you have a question. Open a [discussion](https://github.com/Hopding/pdf-lib/discussions/new) instead.
-* If none of the templates match what you're looking for, then you should not create an issue. Start a [discussion](https://github.com/Hopding/pdf-lib/discussions/new) instead.
+## Steps to Reproduce (for bugs)
+<!-- How can we reproduce this issue? -->
 
-See [MAINTAINERSHIP.md#issues](https://github.com/Hopding/pdf-lib/blob/master/docs/MAINTAINERSHIP.md#issues) for more information.
+## Expected Behavior
+<!-- What did you expect to happen? -->
+
+## Actual Behavior
+<!-- What actually happened? -->
+
+## Environment
+- @maxwbh/pdf-lib version:
+- Node.js version:
+- Browser (if applicable):
+- Operating System:
+
+## Code Example
+<!-- Provide a minimal code example that demonstrates the issue -->
+
+```javascript
+// Your code here
+```
+
+## Additional Context
+<!-- Any other information that might be helpful -->

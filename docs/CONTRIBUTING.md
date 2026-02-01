@@ -1,10 +1,10 @@
-# Contributing to `pdf-lib`
+# Contributing to `@maxwbh/pdf-lib`
 
 :+1::tada: First off, thanks for taking the time to contribute! :tada::+1:
 
-`pdf-lib` is a JavaScript library designed to create and modify PDF files in any JavaScript environment. Contributions are welcomed and appreciated! Please read through this document to learn how to setup and run the project on your machine. If you have any questions or run into trouble, please [create a discussion](https://github.com/Hopding/pdf-lib/discussions).
+`@maxwbh/pdf-lib` is a JavaScript library designed to create and modify PDF files in any JavaScript environment. This is an extended fork of [pdf-lib](https://github.com/Hopding/pdf-lib) with additional features including encryption, decryption, incremental save, and hyperlinks.
 
-Be sure to read through [MAINTAINERSHIP.md](MAINTAINERSHIP.md) so that you understand how this project is maintained.
+Contributions are welcomed and appreciated! Please read through this document to learn how to setup and run the project on your machine. If you have any questions or run into trouble, please [create an issue](https://github.com/Maxwbh/pdf-lib/issues).
 
 ### Table Of Contents
 
@@ -26,7 +26,7 @@ Be sure to read through [MAINTAINERSHIP.md](MAINTAINERSHIP.md) so that you under
 
 All PRs must:
 
-- Work in Node, Deno, Browser, and React Native environemnts.
+- Work in Node, Deno, Browser, and React Native environments.
 - Be explicitly tested in Node, Deno, and multiple browsers.
 - Work on **new** PDF files.
 - Work on all types of **existing** PDF files.
@@ -34,13 +34,11 @@ All PRs must:
 - Be fully integration tested.
 - Have doc comments for new public APIs.
 
-See also [MAINTAINERSHIP.md#pull-requests](MAINTAINERSHIP.md#pull-requests).
-
 It is recommended to read the PR template before you get underway with your changes.
 
 ## Adding Dependencies
 
-We try to avoid adding new dependencies to `pdf-lib` as they tend to have a high maintenance cost. However, new dependencies are sometimes necessary. If you're thinking about creating a PR that adds a new dependency, you should write a [proposal](https://github.com/Hopding/pdf-lib/issues/new?assignees=&labels=proposal%2Cneeds-triage&template=proposal.yml) first.
+We try to avoid adding new dependencies to `@maxwbh/pdf-lib` as they tend to have a high maintenance cost. However, new dependencies are sometimes necessary. If you're thinking about creating a PR that adds a new dependency, you should open an [issue](https://github.com/Maxwbh/pdf-lib/issues) first to discuss the proposal.
 
 If it's possible to build your PR without introducing new dependencies, then that's what you should do. But if you _really, truly_ think you need to introduce a new dependency, it will need to meet the following requirements:
 
@@ -69,18 +67,18 @@ All contributors are advised to read the following sections:
 
 ## Local Setup And Prerequisites
 
-You can develop `pdf-lib` on Windows, Mac, or Linux machines. While most of the original code was developed on Macs, care has been taken to ensure that all scripts and commands needed for development are platform independent. (If you find anything that doesn't work on your machine/platform, please [create an issue](https://github.com/Hopding/pdf-lib/issues/new) or submit a PR!)
+You can develop `@maxwbh/pdf-lib` on Windows, Mac, or Linux machines. While most of the original code was developed on Macs, care has been taken to ensure that all scripts and commands needed for development are platform independent. (If you find anything that doesn't work on your machine/platform, please [create an issue](https://github.com/Maxwbh/pdf-lib/issues) or submit a PR!)
 
-In order to work on `pdf-lib`, please ensure you have installed the following:
+In order to work on `@maxwbh/pdf-lib`, please ensure you have installed the following:
 
-- **Node.js** provides the runtime needed to run this project. ([Installation instructions](https://nodejs.org/en/download/) - need `v9.0.0` or greater).
+- **Node.js** provides the runtime needed to run this project. ([Installation instructions](https://nodejs.org/en/download/) - need `v18.0.0` or greater, recommended `v22.0.0`).
 - **Yarn** is the package manager used for this project. ([Installation instructions](https://yarnpkg.com/en/docs/install) - need `v1.12.0` or greater).
 - **Git** is the SCM used for this project. ([Installation instructions](https://git-scm.com/downloads) - need `2.17.2` or greater)
 
 Next you'll need to clone the project:
 
 ```
-git clone https://github.com/Hopding/pdf-lib.git
+git clone https://github.com/Maxwbh/pdf-lib.git
 cd pdf-lib
 ```
 
@@ -94,7 +92,7 @@ If you don't see any errors or warnings, then everything should have worked corr
 
 ## Running the Unit Tests
 
-We use the [Jest](https://jestjs.io/) framework to write unit tests for `pdf-lib`. All unit tests are kept in the [`tests`](./tests) directory.
+We use the [Jest](https://jestjs.io/) framework to write unit tests for `@maxwbh/pdf-lib`. All unit tests are kept in the [`tests`](../tests) directory.
 
 To run the unit tests, execute the following:
 
@@ -105,24 +103,24 @@ yarn test
 This should output something like:
 
 ```
-yarn run v1.16.0
+yarn run v1.22.0
 $ jest --config jest.json --runInBand
- PASS  tests/api/PDFDocument.spec.ts (13.238s)
+ PASS  tests/api/PDFDocument.spec.ts
  PASS  tests/core/parser/PDFObjectParser.spec.ts
  PASS  tests/core/parser/PDFParser.spec.ts
  ...
- PASS  tests/core/document/PDFTrailer.spec.ts
- PASS  tests/core/streams/AsciiHexStream.spec.ts
+ PASS  tests/core/crypto/PDFSecurity.spec.ts
+ PASS  tests/core/annotation/PDFLinkAnnotation.spec.ts
 
-Test Suites: 44 passed, 44 total
-Tests:       380 passed, 380 total
+Test Suites: 48 passed, 48 total
+Tests:       668 passed, 668 total
 Snapshots:   0 total
-Time:        22.975s, estimated 39s
+Time:        25.0s
 Ran all test suites.
-✨  Done in 23.66s.
+✨  Done in 26.0s.
 ```
 
-Hopefully you see that all the tests passed! But if you see errors or warnings, then something must be wrong with your setup. Please ensure you've following the installation steps outlined in the [local setup and prerequisites section](#local-setup-and-prerequisites). If you still can't get the tests running after following these steps, then please [create an issue](https://github.com/Hopding/pdf-lib/issues/new) explaining the problem you're having.
+Hopefully you see that all the tests passed! But if you see errors or warnings, then something must be wrong with your setup. Please ensure you've following the installation steps outlined in the [local setup and prerequisites section](#local-setup-and-prerequisites). If you still can't get the tests running after following these steps, then please [create an issue](https://github.com/Maxwbh/pdf-lib/issues) explaining the problem you're having.
 
 ## Running the Integration Tests
 
@@ -214,10 +212,10 @@ yarn build
 This should output something like the following:
 
 ```
-yarn run v1.16.0
+yarn run v1.22.0
 $ yarn build:cjs && yarn build:es && yarn build:umd && yarn build:umd:min
-$ ttsc --module commonjs --outDir cjs
-$ ttsc --module ES2015 --outDir es
+$ tspc --module commonjs --outDir cjs
+$ tspc --module ES2015 --outDir es
 $ rollup --config rollup.config.js --file dist/pdf-lib.js
 
 es/index.js → dist/pdf-lib.js...
@@ -229,11 +227,13 @@ created dist/pdf-lib.min.js in 4s
 ✨  Done in 17.34s.
 ```
 
+> Note: This fork uses `ts-patch` with `tspc` instead of `ttypescript` with `ttsc` for Node.js 22+ compatibility.
+
 The compiled artifacts will be located in the `cjs/`, `es/`, and `dist/` directories.
 
 ## Running the Linter
 
-We use two linters to keep `pdf-lib`'s source code clean, tidy, and consistent:
+We use two linters to keep `@maxwbh/pdf-lib`'s source code clean, tidy, and consistent:
 
 - [**TSLint**](https://palantir.github.io/tslint/)
 - [**Prettier**](https://prettier.io/)

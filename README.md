@@ -3,10 +3,10 @@
 </h1>
 
 <div align="center">
-  <strong>Create and modify PDF documents in any JavaScript environment.</strong>
+  <strong>Create and modify PDF documents in any JavaScript environment</strong>
 </div>
 <div align="center">
-  Extended fork with encryption, incremental save, and hyperlinks support.
+  Extended fork with <b>PDF encryption/decryption</b>, <b>incremental save</b>, and <b>hyperlinks</b>
 </div>
 
 <br />
@@ -26,11 +26,25 @@
       alt="NPM Downloads"
     />
   </a>
+  <!-- Bundle Size -->
+  <a href="https://bundlephobia.com/package/@maxwbh/pdf-lib">
+    <img
+      src="https://img.shields.io/bundlephobia/minzip/@maxwbh/pdf-lib?style=flat-square"
+      alt="Bundle Size"
+    />
+  </a>
   <!-- License -->
   <a href="https://github.com/Maxwbh/pdf-lib/blob/master/LICENSE.md">
     <img
       src="https://img.shields.io/npm/l/@maxwbh/pdf-lib.svg?style=flat-square"
       alt="License"
+    />
+  </a>
+  <!-- TypeScript -->
+  <a href="https://www.typescriptlang.org/">
+    <img
+      src="https://img.shields.io/badge/TypeScript-5.3-blue?style=flat-square"
+      alt="TypeScript"
     />
   </a>
   <!-- Prettier Badge -->
@@ -44,12 +58,22 @@
 
 <br />
 
-> **This is an extended fork of [pdf-lib](https://github.com/Hopding/pdf-lib) with additional features.**
+<div align="center">
+
+| [Installation](#installation) | [Quick Start](#quick-start) | [New Features](#new-features) | [Documentation](docs/DOCUMENTACAO_PT.md) |
+|-------------------------------|----------------------------|------------------------------|------------------------------------------|
+
+</div>
+
+> **This is an extended fork of [pdf-lib](https://github.com/Hopding/pdf-lib)** with enterprise features including PDF encryption, decryption, incremental save (preserving digital signatures), and hyperlinks support.
+>
+> **100% backward compatible** - Just change your import from `pdf-lib` to `@maxwbh/pdf-lib`
 >
 > **Documentação em Português: [docs/DOCUMENTACAO_PT.md](docs/DOCUMENTACAO_PT.md)**
 
 ## Table of Contents
 
+- [New Features](#new-features)
 - [Features](#features)
 - [Motivation](#motivation)
 - [Usage Examples](#usage-examples)
@@ -68,6 +92,10 @@
   - [Set Viewer Preferences](#set-viewer-preferences)
   - [Read Viewer Preferences](#read-viewer-preferences)
   - [Draw SVG Paths](#draw-svg-paths)
+  - [Encrypt Document](#encrypt-document)
+  - [Open Encrypted Document](#open-encrypted-document)
+  - [Add Hyperlinks](#add-hyperlinks)
+  - [Incremental Save](#incremental-save-preserve-signatures)
 - [Deno Usage](#deno-usage)
 - [Complete Examples](#complete-examples)
 - [Installation](#installation)
@@ -76,18 +104,48 @@
 - [Creating and Filling Forms](#creating-and-filling-forms)
 - [Limitations](#limitations)
 - [Help and Discussion](#help-and-discussion)
-- [Encryption Handling](#encryption-handling)
-- [Migrating to v1.0.0](docs/MIGRATION.md)
 - [Contributing](#contributing)
-- [Maintainership](#maintainership)
-- [Tutorials and Cool Stuff](#tutorials-and-cool-stuff)
-- [Prior Art](#prior-art)
-- [Git History Rewrite](#git-history-rewrite)
 - [License](#license)
+
+## New Features
+
+This fork extends the original `pdf-lib` with enterprise-grade features:
+
+| Feature | Description |
+|---------|-------------|
+| **PDF Encryption** | Password protect documents with RC4 (40/128-bit) or AES (128/256-bit) encryption |
+| **PDF Decryption** | Open and work with password-protected PDF files |
+| **Incremental Save** | Modify signed PDFs without invalidating digital signatures |
+| **Hyperlinks** | Add clickable URL links and internal page navigation |
+| **Granular Permissions** | Control printing, copying, modifying, form filling, and more |
+
+### Quick Examples
+
+```js
+// Encrypt a PDF
+const pdfBytes = await pdfDoc.save({
+  encrypt: {
+    userPassword: 'user123',
+    ownerPassword: 'owner456',
+    permissions: { printing: true, copying: false },
+  },
+});
+
+// Open encrypted PDF
+const pdfDoc = await PDFDocument.load(encryptedBytes, { password: 'user123' });
+
+// Preserve digital signatures
+pdfDoc.takeSnapshot();
+// ... make changes ...
+const pdfBytes = await pdfDoc.saveIncremental();
+
+// Add hyperlinks
+page.drawLink({ url: 'https://example.com', x: 50, y: 300, width: 100, height: 20 });
+```
 
 ## Features
 
-### New in this fork (v1.18.0+)
+### New in @maxwbh/pdf-lib v1.18.0+
 
 - **Encrypt PDFs** - Password protect documents with RC4 or AES encryption
 - **Decrypt PDFs** - Open password-protected PDF files
@@ -95,7 +153,7 @@
 - **Hyperlinks** - Add clickable links (URLs and internal page navigation)
 - **Granular Permissions** - Control printing, copying, modifying, etc.
 
-### Original features
+### All features
 
 - Create new PDFs
 - Modify existing PDFs
@@ -140,7 +198,7 @@ _This example produces [this PDF](assets/pdfs/examples/create_document.pdf)._
 
 <!-- prettier-ignore -->
 ```js
-import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
+import { PDFDocument, StandardFonts, rgb } from '@maxwbh/pdf-lib'
 
 // Create a new PDFDocument
 const pdfDoc = await PDFDocument.create()
@@ -181,7 +239,7 @@ _This example produces [this PDF](assets/pdfs/examples/modify_document.pdf)_ (wh
 
 <!-- prettier-ignore -->
 ```js
-import { degrees, PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import { degrees, PDFDocument, rgb, StandardFonts } from '@maxwbh/pdf-lib';
 
 // This should be a Uint8Array or ArrayBuffer
 // This data can be obtained in a number of different ways
@@ -232,7 +290,7 @@ _This example produces [this PDF](assets/pdfs/examples/create_form.pdf)._
 
 <!-- prettier-ignore -->
 ```js
-import { PDFDocument } from 'pdf-lib'
+import { PDFDocument } from '@maxwbh/pdf-lib'
 
 // Create a new PDFDocument
 const pdfDoc = await PDFDocument.create()
@@ -330,7 +388,7 @@ _This example produces [this PDF](assets/pdfs/examples/fill_form.pdf)_ (when [th
 
 <!-- prettier-ignore -->
 ```js
-import { PDFDocument } from 'pdf-lib'
+import { PDFDocument } from '@maxwbh/pdf-lib'
 
 // These should be Uint8Arrays or ArrayBuffers
 // This data can be obtained in a number of different ways
@@ -439,7 +497,7 @@ _This example produces [this PDF](assets/pdfs/examples/flatten_form.pdf)_ (when 
 
 <!-- prettier-ignore -->
 ```js
-import { PDFDocument } from 'pdf-lib'
+import { PDFDocument } from '@maxwbh/pdf-lib'
 
 // This should be a Uint8Array or ArrayBuffer
 // This data can be obtained in a number of different ways
@@ -487,7 +545,7 @@ _This example produces [this PDF](assets/pdfs/examples/copy_pages.pdf)_ (when [t
 
 <!-- prettier-ignore -->
 ```js
-import { PDFDocument } from 'pdf-lib'
+import { PDFDocument } from '@maxwbh/pdf-lib'
 
 // Create a new PDFDocument
 const pdfDoc = await PDFDocument.create()
@@ -532,7 +590,7 @@ _This example produces [this PDF](assets/pdfs/examples/embed_png_and_jpeg_images
 
 <!-- prettier-ignore -->
 ```js
-import { PDFDocument } from 'pdf-lib'
+import { PDFDocument } from '@maxwbh/pdf-lib'
 
 // These should be Uint8Arrays or ArrayBuffers
 // This data can be obtained in a number of different ways
@@ -590,7 +648,7 @@ _This example produces [this PDF](assets/pdfs/examples/embed_pdf_pages.pdf)_ (wh
 
 <!-- prettier-ignore -->
 ```js
-import { PDFDocument } from 'pdf-lib'
+import { PDFDocument } from '@maxwbh/pdf-lib'
 
 // These should be Uint8Arrays or ArrayBuffers
 // This data can be obtained in a number of different ways
@@ -662,7 +720,7 @@ _This example produces [this PDF](assets/pdfs/examples/embed_font_and_measure_te
 
 <!-- prettier-ignore -->
 ```js
-import { PDFDocument, rgb } from 'pdf-lib'
+import { PDFDocument, rgb } from '@maxwbh/pdf-lib'
 import fontkit from '@pdf-lib/fontkit'
 
 // This should be a Uint8Array or ArrayBuffer
@@ -725,7 +783,7 @@ _This example produces [this PDF](assets/pdfs/examples/add_attachments.pdf)_ (wh
 
 <!-- prettier-ignore -->
 ```js
-import { PDFDocument } from 'pdf-lib'
+import { PDFDocument } from '@maxwbh/pdf-lib'
 
 // These should be Uint8Arrays or ArrayBuffers
 // This data can be obtained in a number of different ways
@@ -774,7 +832,7 @@ _This example produces [this PDF](assets/pdfs/examples/set_document_metadata.pdf
 
 <!-- prettier-ignore -->
 ```js
-import { PDFDocument, StandardFonts } from 'pdf-lib'
+import { PDFDocument, StandardFonts } from '@maxwbh/pdf-lib'
 
 // Create a new PDFDocument
 const pdfDoc = await PDFDocument.create()
@@ -814,7 +872,7 @@ const pdfBytes = await pdfDoc.save()
 
 <!-- prettier-ignore -->
 ```js
-import { PDFDocument } from 'pdf-lib'
+import { PDFDocument } from '@maxwbh/pdf-lib'
 
 // This should be a Uint8Array or ArrayBuffer
 // This data can be obtained in a number of different ways
@@ -863,7 +921,7 @@ import {
   PrintScaling,
   Duplex,
   PDFName,
-} from 'pdf-lib'
+} from '@maxwbh/pdf-lib'
 
 // Create a new PDFDocument
 const pdfDoc = await PDFDocument.create()
@@ -922,7 +980,7 @@ const pdfBytes = await pdfDoc.save()
 
 <!-- prettier-ignore -->
 ```js
-import { PDFDocument } from 'pdf-lib'
+import { PDFDocument } from '@maxwbh/pdf-lib'
 
 // This should be a Uint8Array or ArrayBuffer
 // This data can be obtained in a number of different ways
@@ -976,7 +1034,7 @@ _This example produces [this PDF](assets/pdfs/examples/draw_svg_paths.pdf)_.
 
 <!-- prettier-ignore -->
 ```js
-import { PDFDocument, rgb } from 'pdf-lib'
+import { PDFDocument, rgb } from '@maxwbh/pdf-lib'
 
 // SVG path for a wavy line
 const svgPath =
@@ -1113,9 +1171,7 @@ fs.writeFileSync('modified-signed-document.pdf', modifiedPdfBytes)
 
 ## Deno Usage
 
-`pdf-lib` fully supports the exciting new [Deno](https://deno.land/) runtime! All of the [usage examples](#usage-examples) work in Deno. The only thing you need to do is change the imports for `pdf-lib` and `@pdf-lib/fontkit` to use the [Skypack](https://www.skypack.dev/) CDN, because Deno requires all modules to be referenced via URLs.
-
-> **See also [How to Create and Modify PDF Files in Deno With pdf-lib](https://medium.com/swlh/how-to-create-and-modify-pdf-files-in-deno-ffaad7099b0?source=friends_link&sk=3da183bb776d059df428eaea52102f19)**
+`@maxwbh/pdf-lib` fully supports the [Deno](https://deno.land/) runtime! All of the [usage examples](#usage-examples) work in Deno. The only thing you need to do is change the imports for `@maxwbh/pdf-lib` and `@pdf-lib/fontkit` to use the [jsDelivr](https://www.jsdelivr.com/) CDN, because Deno requires all modules to be referenced via URLs.
 
 ### Creating a Document with Deno
 
@@ -1126,7 +1182,7 @@ import {
   PDFDocument,
   StandardFonts,
   rgb,
-} from 'https://cdn.skypack.dev/pdf-lib@^1.11.1?dts';
+} from 'https://cdn.jsdelivr.net/npm/@maxwbh/pdf-lib@1.18.0/+esm';
 
 const pdfDoc = await PDFDocument.create();
 const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
@@ -1165,8 +1221,8 @@ import {
   PDFDocument,
   rgb,
   StandardFonts,
-} from 'https://cdn.skypack.dev/pdf-lib@^1.11.1?dts';
-import fontkit from 'https://cdn.skypack.dev/@pdf-lib/fontkit@^1.0.0?dts';
+} from 'https://cdn.jsdelivr.net/npm/@maxwbh/pdf-lib@1.18.0/+esm';
+import fontkit from 'https://cdn.jsdelivr.net/npm/@pdf-lib/fontkit@1.0.0/+esm';
 
 const url = 'https://pdf-lib.js.org/assets/ubuntu/Ubuntu-R.ttf';
 const fontBytes = await fetch(url).then((res) => res.arrayBuffer());
@@ -1255,7 +1311,7 @@ The API is fully backward compatible. Just update your imports:
 
 ```javascript
 // Before
-import { PDFDocument } from 'pdf-lib';
+import { PDFDocument } from '@maxwbh/pdf-lib';
 
 // After
 import { PDFDocument } from '@maxwbh/pdf-lib';
@@ -1304,7 +1360,7 @@ To register the `fontkit` instance:
 
 <!-- prettier-ignore -->
 ```js
-import { PDFDocument } from 'pdf-lib'
+import { PDFDocument } from '@maxwbh/pdf-lib'
 import fontkit from '@pdf-lib/fontkit'
 
 const pdfDoc = await PDFDocument.create()
@@ -1349,7 +1405,7 @@ When working with PDFs, you will frequently come across the terms "character enc
 - **There are 14 standard fonts** defined in the PDF specification. They are as follows: _Times Roman_ (normal, bold, and italic), _Helvetica_ (normal, bold, and italic), _Courier_ (normal, bold, and italic), _ZapfDingbats_ (normal), and _Symbol_ (normal). These 14 fonts are guaranteed to be available in PDF readers. As such, you do not need to embed any font data if you wish to use one of these fonts. You can use a standard font like so:
   <!-- prettier-ignore -->
   ```js
-  import { PDFDocument, StandardFonts } from 'pdf-lib'
+  import { PDFDocument, StandardFonts } from '@maxwbh/pdf-lib'
   const pdfDoc = await PDFDocument.create()
   const courierFont = await pdfDoc.embedFont(StandardFonts.Courier)
   const page = pdfDoc.addPage()
@@ -1361,7 +1417,7 @@ When working with PDFs, you will frequently come across the terms "character enc
 - **You can use characters outside the Latin alphabet** by embedding your own fonts. Embedding your own font requires to you load the font data (from a file or via a network request, for example) and pass it to the `embedFont` method. When you embed your own font, you can use any Unicode characters that it supports. This capability frees you from the limitations imposed by the standard fonts. Most PDF files use embedded fonts. You can embed and use a custom font like so ([see also](#embed-font-and-measure-text)):
   <!-- prettier-ignore -->
   ```js
-  import { PDFDocument } from 'pdf-lib'
+  import { PDFDocument } from '@maxwbh/pdf-lib'
   import fontkit from '@pdf-lib/fontkit'
 
   const url = 'https://pdf-lib.js.org/assets/ubuntu/Ubuntu-R.ttf'
@@ -1413,7 +1469,7 @@ See the [form creation](#create-form) and [form filling](#fill-form) usage examp
 You can use an embedded font when filling form fields as follows:
 
 ```js
-import { PDFDocument } from 'pdf-lib';
+import { PDFDocument } from '@maxwbh/pdf-lib';
 import fontkit from '@pdf-lib/fontkit';
 
 // Fetch the PDF with form fields
@@ -1524,105 +1580,32 @@ Below are some of the most commonly used methods for reading and filling the afo
 
 ## Help and Discussion
 
-[Discussions](https://github.com/Hopding/pdf-lib/discussions) is the best place to chat with us, ask questions, and learn more about pdf-lib!
+For questions, bug reports, and feature requests for this fork, please use [GitHub Issues](https://github.com/Maxwbh/pdf-lib/issues).
 
-See also [MAINTAINERSHIP.md#communication](docs/MAINTAINERSHIP.md#communication) and [MAINTAINERSHIP.md#discord](docs/MAINTAINERSHIP.md#discord).
-
-## Encryption Handling
-
-**`pdf-lib` does not currently support encrypted documents.** You should not use `pdf-lib` with encrypted documents. However, this is a feature that could be added to `pdf-lib`. Please [create an issue](https://github.com/Hopding/pdf-lib/issues/new) if you would find this feature helpful!
-
-When an encrypted document is passed to `PDFDocument.load(...)`, an error will be thrown:
-
-<!-- prettier-ignore -->
-```js
-import { PDFDocument, EncryptedPDFError } from 'pdf-lib'
-
-const encryptedPdfBytes = ...
-
-// Assignment fails. Throws an `EncryptedPDFError`.
-const pdfDoc = PDFDocument.load(encryptedPdfBytes)
-```
-
-This default behavior is usually what you want. It allows you to easily detect if a given document is encrypted, and it prevents you from trying to modify it. However, if you really want to load the document, you can use the `{ ignoreEncryption: true }` option:
-
-```js
-import { PDFDocument } from 'pdf-lib'
-
-const encryptedPdfBytes = ...
-
-// Assignment succeeds. Does not throw an error.
-const pdfDoc = PDFDocument.load(encryptedPdfBytes, { ignoreEncryption: true })
-```
-
-Note that **using this option does not decrypt the document**. This means that any modifications you attempt to make on the returned `PDFDocument` may fail, or have unexpected results.
-
-**You should not use this option.** It only exists for backwards compatibility reasons.
+For discussions about the original pdf-lib, visit [Discussions](https://github.com/Hopding/pdf-lib/discussions).
 
 ## Contributing
 
-We welcome contributions from the open source community! If you are interested in contributing to `pdf-lib`, please take a look at the [CONTRIBUTING.md](docs/CONTRIBUTING.md) file. It contains information to help you get `pdf-lib` setup and running on your machine. (We try to make this as simple and fast as possible! :rocket:)
+We welcome contributions from the open source community! If you are interested in contributing to `@maxwbh/pdf-lib`, please fork the repository and submit a pull request.
 
-## Maintainership
+## Acknowledgements
 
-Check out [MAINTAINERSHIP.md](docs/MAINTAINERSHIP.md) for details on how this repo is maintained and how we use [issues](docs/MAINTAINERSHIP.md#issues), [PRs](docs/MAINTAINERSHIP.md#pull-requests), and [discussions](docs/MAINTAINERSHIP.md#discussions).
+This project is a fork of [pdf-lib](https://github.com/Hopding/pdf-lib) created by Andrew Dillon ([@Hopding](https://github.com/Hopding)). We thank him and all the original contributors for their amazing work.
 
-## Tutorials and Cool Stuff
+### Tutorials and Resources
 
-- [labelmake](https://github.com/hand-dot/labelmake) - a library for declarative PDF generation created by @hand-dot
-- [Möbius Printing helper](https://shreevatsa.net/mobius-print/) - a tool created by @shreevatsa
-- [Extract PDF pages](https://shreevatsa.net/pdf-pages/) - a tool created by @shreevatsa
-- [Travel certificate generator](https://github.com/LAB-MI/deplacement-covid-19) - a tool that creates travel certificates for French citizens under quarantine due to COVID-19
-- [How to use pdf-lib in AWS Lambdas](https://medium.com/swlh/create-pdf-using-pdf-lib-on-serverless-aws-lambda-e9506246dc88) - a tutorial written by Crespo Wang
-- [Working With PDFs in Node.js Using pdf-lib](http://thecodebarbarian.com/working-with-pdfs-in-node-js.html) - a tutorial by Valeri Karpov
-- [Electron app for resizing PDFs](https://github.com/vegarringdal/simple-pdf-resizer) - a tool created by @vegarringdal
-- [PDF Shelter](https://pdfshelter.com) - online PDF manipulation tools by Lucas Morais
+- [labelmake](https://github.com/hand-dot/labelmake) - Declarative PDF generation
+- [How to use pdf-lib in AWS Lambdas](https://medium.com/swlh/create-pdf-using-pdf-lib-on-serverless-aws-lambda-e9506246dc88)
+- [Working With PDFs in Node.js Using pdf-lib](http://thecodebarbarian.com/working-with-pdfs-in-node-js.html)
+- [PDF Shelter](https://pdfshelter.com) - Online PDF manipulation tools
 
-## Prior Art
+### Prior Art
 
-- [`pdfkit`](https://github.com/devongovett/pdfkit) is a PDF generation library for Node and the Browser. This library was immensely helpful as a reference and existence proof when creating `pdf-lib`. `pdfkit`'s code for [font embedding](src/core/embedders/CustomFontEmbedder.ts#L17-L21), [PNG embedding](src/core/embedders/PngEmbedder.ts#L7-L11), and [JPG embedding](src/core/embedders/JpegEmbedder.ts#L25-L29) was especially useful.
-- [`pdf.js`](https://github.com/mozilla/pdf.js) is a PDF rendering library for the Browser. This library was helpful as a reference when writing `pdf-lib`'s parser. Some of the code for stream decoding was [ported directly to TypeScript](src/core/streams) for use in `pdf-lib`.
-- [`pdfbox`](https://pdfbox.apache.org/) is a PDF generation and modification library written in Java. This library was an invaluable reference when implementing form creation and filling APIs for `pdf-lib`.
-- [`jspdf`](https://github.com/MrRio/jsPDF) is a PDF generation library for the browser.
-- [`pdfmake`](https://github.com/bpampuch/pdfmake) is a PDF generation library for the browser.
-- [`hummus`](https://github.com/galkahana/HummusJS) is a PDF generation and modification library for Node environments. `hummus` is a Node wrapper around a [C++ library](https://github.com/galkahana/PDF-Writer), so it doesn't work in many JavaScript environments - like the Browser or React Native.
-- [`react-native-pdf-lib`](https://github.com/Hopding/react-native-pdf-lib) is a PDF generation and modification library for React Native environments. `react-native-pdf-lib` is a wrapper around [C++](https://github.com/galkahana/PDF-Writer) and [Java](https://github.com/TomRoush/PdfBox-Android) libraries.
-- [`pdfassembler`](https://github.com/DevelopingMagic/pdfassembler) is a PDF generation and modification library for Node and the browser. It requires some knowledge about the logical structure of PDF documents to use.
-
-## Git History Rewrite
-
-This repo used to contain a file called `pdf_specification.pdf` in the root directory. This was a copy of the [PDF 1.7 specification](https://www.adobe.com/content/dam/acom/en/devnet/pdf/pdfs/PDF32000_2008.pdf), which is made freely available by Adobe. On 8/30/2021, we received a DMCA complaint requiring us to remove the file from this repo. Simply removing the file via a new commit to `master` was insufficient to satisfy the complaint. The file needed to be completely removed from the repo's git history. Unfortunately, the file was added over two years ago, this meant we had to rewrite the repo's git history and force push to `master` 😔.
-
-### Steps We Took
-
-We removed the file and rewrote the repo's history using [BFG Repo-Cleaner](https://rtyley.github.io/bfg-repo-cleaner/) as outlined [here](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository). For full transparency, here are the exact commands we ran:
-
-```
-$ git clone git@github.com:Hopding/pdf-lib.git
-$ cd pdf-lib
-$ rm pdf_specification.pdf
-$ git commit -am 'Remove pdf_specification.pdf'
-$ bfg --delete-files pdf_specification.pdf
-$ git reflog expire --expire=now --all && git gc --prune=now --aggressive
-$ git push --force
-```
-
-### Why Should I Care?
-
-If you're a user of `pdf-lib`, you shouldn't care! Just keep on using `pdf-lib` like normal 😃 ✨!
-
-If you are a `pdf-lib` developer (meaning you've forked `pdf-lib` and/or have an open PR) then this does impact you. If you forked or cloned the repo prior to 8/30/2021 then your fork's git history is out of sync with this repo's `master` branch. Unfortunately, this will likely be a headache for you to deal with. Sorry! We didn't want to rewrite the history, but there really was no alternative.
-
-It's important to note that pdf-lib's _source code_ has not changed at all. It's exactly the same as it was before the git history rewrite. The repo still has the exact same number of commits (and even the same commit contents, except for the commit that added `pdf_specification.pdf`). What has changed are the SHAs of those commits.
-
-The simplest way to deal with this fact is to:
-
-1. Reclone pdf-lib
-2. Manually copy any changes you've made from your old clone to the new one
-3. Use your new clone going forward
-4. Reopen your unmerged PRs using your new clone
-
-See this [StackOverflow answer](https://stackoverflow.com/a/48268766) for a great, in depth explanation of what a git history rewrite entails.
+- [`pdfkit`](https://github.com/devongovett/pdfkit) - PDF generation library for Node and Browser
+- [`pdf.js`](https://github.com/mozilla/pdf.js) - PDF rendering library for Browser
+- [`pdfbox`](https://pdfbox.apache.org/) - PDF library written in Java
+- [`jspdf`](https://github.com/MrRio/jsPDF) - PDF generation for browser
+- [`pdfmake`](https://github.com/bpampuch/pdfmake) - PDF generation for browser
 
 ## License
 
