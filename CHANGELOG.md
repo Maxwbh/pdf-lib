@@ -56,6 +56,12 @@ This is the first release of the `@maxwbh/pdf-lib` fork, which extends the origi
 ### Changed
 - Package renamed from `pdf-lib` to `@maxwbh/pdf-lib`
 - Repository moved to `github.com/Maxwbh/pdf-lib`
+- Updated to TypeScript 5.3.0
+- Updated to Node.js 22 compatibility
+- Replaced `ttypescript` with `ts-patch` for modern TypeScript support
+- Updated Rollup to v4.0.0
+- Updated Jest to v29.0.0
+- Replaced deprecated TSLint with ESLint
 
 ### Documentation
 - Added complete Portuguese documentation (`docs/DOCUMENTACAO_PT.md`)
