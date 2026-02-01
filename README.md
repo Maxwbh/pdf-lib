@@ -27,10 +27,10 @@
     />
   </a>
   <!-- Bundle Size -->
-  <a href="https://bundlephobia.com/package/@maxwbh/pdf-lib">
+  <a href="https://www.npmjs.com/package/@maxwbh/pdf-lib">
     <img
-      src="https://img.shields.io/bundlephobia/minzip/@maxwbh/pdf-lib?style=flat-square"
-      alt="Bundle Size"
+      src="https://img.shields.io/badge/minzip-~95kB-blue?style=flat-square"
+      alt="Bundle Size ~95kB gzipped"
     />
   </a>
   <!-- License -->
@@ -1311,7 +1311,7 @@ The API is fully backward compatible. Just update your imports:
 
 ```javascript
 // Before
-import { PDFDocument } from '@maxwbh/pdf-lib';
+import { PDFDocument } from 'pdf-lib';
 
 // After
 import { PDFDocument } from '@maxwbh/pdf-lib';
