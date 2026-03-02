@@ -44,7 +44,7 @@ import { PDFDocument } from '@maxwbh/pdf-lib';
 **CDN (browser):**
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@maxwbh/pdf-lib@1.18.0/dist/pdf-lib.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@maxwbh/pdf-lib@1.18.1/dist/pdf-lib.min.js"></script>
 ```
 
 ---
@@ -160,7 +160,7 @@ page.drawText('Unicode text: 日本語, Ελληνικά, العربية', { fon
 ## Deno
 
 ```js
-import { PDFDocument } from 'https://cdn.jsdelivr.net/npm/@maxwbh/pdf-lib@1.18.0/+esm';
+import { PDFDocument } from 'https://cdn.jsdelivr.net/npm/@maxwbh/pdf-lib@1.18.1/+esm';
 
 const pdfDoc = await PDFDocument.create();
 const page = pdfDoc.addPage();
@@ -175,6 +175,8 @@ await Deno.writeFile('out.pdf', pdfBytes);
 
 | Document | Description |
 |----------|-------------|
+| [docs/API_REFERENCE.md](docs/API_REFERENCE.md) | Complete API reference with examples |
+| [docs/API_REFERENCE.pt-BR.md](docs/API_REFERENCE.pt-BR.md) | Referência completa da API em Português |
 | [README.pt-BR.md](README.pt-BR.md) | Documentação completa em Português |
 | [ROADMAP.md](ROADMAP.md) | Versioning plan and upcoming features |
 | [CHANGELOG.md](CHANGELOG.md) | Release history |
