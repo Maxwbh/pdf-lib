@@ -64,8 +64,8 @@ This is the first release of the `@maxwbh/pdf-lib` fork, which extends the origi
 - Replaced deprecated TSLint with ESLint
 
 ### Documentation
-- Added complete Portuguese documentation (`docs/DOCUMENTACAO_PT.md`)
-- Added improvements roadmap (`IMPROVEMENTS_TODO.md`)
+- Added complete Portuguese documentation (`README.pt-BR.md`)
+- Added improvements roadmap (`ROADMAP.md`)
 
 ---
 
