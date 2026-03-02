@@ -5,6 +5,9 @@
 [![NPM Version](https://img.shields.io/npm/v/@maxwbh/pdf-lib.svg?style=flat-square)](https://www.npmjs.com/package/@maxwbh/pdf-lib)
 [![NPM Downloads](https://img.shields.io/npm/dm/@maxwbh/pdf-lib.svg?style=flat-square)](https://www.npmjs.com/package/@maxwbh/pdf-lib)
 [![License](https://img.shields.io/npm/l/@maxwbh/pdf-lib.svg?style=flat-square)](https://github.com/Maxwbh/pdf-lib/blob/master/LICENSE.md)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue?style=flat-square)](https://www.typescriptlang.org/)
+
+> [English documentation → README.md](README.md)
 
 ---
 
@@ -1289,5 +1292,18 @@ const pdfBytes = await pdfDoc.save({
 
 ---
 
-*Documentação atualizada em Fevereiro de 2026*
-*Versão: 1.18.0*
+## Recursos
+
+| Documento | Descrição |
+|-----------|-----------|
+| [README.md](README.md) | Documentação em inglês |
+| [ROADMAP.md](ROADMAP.md) | Plano de versões futuras |
+| [CHANGELOG.md](CHANGELOG.md) | Histórico de alterações |
+| [docs/MIGRATION.md](docs/MIGRATION.md) | Guia de migração do pdf-lib original |
+| [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) | Como contribuir |
+| [docs/RELEASING.md](docs/RELEASING.md) | Processo de release |
+
+---
+
+*Documentação atualizada em Março de 2026 · Versão 1.18.0*
+*Fork de [pdf-lib](https://github.com/Hopding/pdf-lib) por Andrew Dillon*

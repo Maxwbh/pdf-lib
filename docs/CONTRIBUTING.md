@@ -235,7 +235,7 @@ The compiled artifacts will be located in the `cjs/`, `es/`, and `dist/` directo
 
 We use two linters to keep `@maxwbh/pdf-lib`'s source code clean, tidy, and consistent:
 
-- [**TSLint**](https://palantir.github.io/tslint/)
+- [**ESLint**](https://eslint.org/) with TypeScript support
 - [**Prettier**](https://prettier.io/)
 
 It is recommended that you setup your editor to automatically run these linters for you (either on save, or some other keyboard shortcut). However, this is not required. The linters can be run from the command line as well.
@@ -249,11 +249,10 @@ yarn lint
 This should output something like the following:
 
 ```
-yarn run v1.16.0
-$ yarn lint:prettier && yarn lint:tslint:src && yarn lint:tslint:tests
-$ prettier --write './{src,tests}/**/*.{ts,js,json}' --loglevel error
-$ tslint --project tsconfig.json --fix
-$ tslint --project tests/tsconfig.json --fix
+yarn run v1.22.0
+$ yarn lint:prettier && yarn lint:eslint
+$ prettier --write './{src,tests,apps}/**/*.{ts,js,json,html,css}' --loglevel error
+$ eslint src/**/*.ts --fix
 ✨  Done in 7.89s.
 ```
 
@@ -261,7 +260,7 @@ The linter is very strict about the format and style of your code. Anytime it fi
 
 ## Running the Type Checker
 
-`pdf-lib` is written in TypeScript. This means that the project's source code is contained in `.ts` files. All source code must be correctly typed in order for the tests to run, and for the project to compile.
+`@maxwbh/pdf-lib` is written in TypeScript. This means that the project's source code is contained in `.ts` files. All source code must be correctly typed in order for the tests to run, and for the project to compile.
 
 To run the type checker, execute the following:
 
