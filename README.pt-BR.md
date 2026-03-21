@@ -87,10 +87,10 @@ pnpm add @maxwbh/pdf-lib
 
 ```html
 <!-- Produção (minificado) -->
-<script src="https://cdn.jsdelivr.net/npm/@maxwbh/pdf-lib@1.18.0/dist/pdf-lib.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@maxwbh/pdf-lib@1.18.1/dist/pdf-lib.min.js"></script>
 
 <!-- Desenvolvimento (com sourcemaps) -->
-<script src="https://cdn.jsdelivr.net/npm/@maxwbh/pdf-lib@1.18.0/dist/pdf-lib.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@maxwbh/pdf-lib@1.18.1/dist/pdf-lib.js"></script>
 ```
 
 ### Migrando do pdf-lib Original
@@ -1173,6 +1173,8 @@ async function numerarPaginas(bytesOriginal) {
 
 ## Referência da API
 
+> **Documentação completa da API:** [docs/API_REFERENCE.pt-BR.md](docs/API_REFERENCE.pt-BR.md)
+
 ### PDFDocument
 
 | Método | Retorno | Descrição |
@@ -1296,6 +1298,8 @@ const pdfBytes = await pdfDoc.save({
 
 | Documento | Descrição |
 |-----------|-----------|
+| [docs/API_REFERENCE.pt-BR.md](docs/API_REFERENCE.pt-BR.md) | Referência completa da API com exemplos |
+| [docs/API_REFERENCE.md](docs/API_REFERENCE.md) | API Reference (English) |
 | [README.md](README.md) | Documentação em inglês |
 | [ROADMAP.md](ROADMAP.md) | Plano de versões futuras |
 | [CHANGELOG.md](CHANGELOG.md) | Histórico de alterações |
@@ -1305,5 +1309,5 @@ const pdfBytes = await pdfDoc.save({
 
 ---
 
-*Documentação atualizada em Março de 2026 · Versão 1.18.0*
+*Documentação atualizada em Março de 2026 · Versão 1.18.1*
 *Fork de [pdf-lib](https://github.com/Hopding/pdf-lib) por Andrew Dillon*
